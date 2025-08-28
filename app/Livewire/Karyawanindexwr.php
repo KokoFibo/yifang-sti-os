@@ -61,7 +61,7 @@ class Karyawanindexwr extends Component
 
     public function export($id)
     {
-        dd('API belum tersedia');
+        dd('API belum tersedia saat ini');
         if ($id) {
 
             $respStore = Http::get('https://salary.accel365.id/api/store/' . $id);
