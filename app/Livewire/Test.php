@@ -55,8 +55,14 @@ class Test extends Component
 
   public function render()
   {
-    $karyawans = Karyawan::where('level_jabatan', '!=', "")->first();
-    dd($karyawans);
+    // hapus data karyawan dan sisakan y=hanya yang placement STI
+    dd('aman');
+    $karyawans = Karyawan::where('placement_id', '!=', 104)->get();
+
+    Karyawan::where('placement_id', '!=', 104)->delete();
+    // dd('done');
+
+
     // $data = User::find("9a84287c-568f-4ace-9cce-cc30c759254f");
     // dd($data);
 

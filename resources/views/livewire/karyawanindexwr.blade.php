@@ -124,18 +124,6 @@
                                                     {{-- <option value="{{ $j }}">{{ $j }} --}}
                                                 </option>
                                             @endforeach
-                                            {{-- <option value="YCME">YCME</option>
-                                            <option value="YEV">YEV</option>
-                                            <option value="YAM">YAM</option>
-                                            <option value="YIG">YIG</option>
-                                            <option value="YSM">YSM</option> --}}
-                                            {{-- <option value="1">YCME</option>
-                                            <option value="2">YEV</option>
-                                            <option value="6">YAM</option>
-                                            <option value="4">YIG</option>
-                                            <option value="5">YSM</option> --}}
-
-
                                         </select>
                                     </div>
                                 </th>
