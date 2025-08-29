@@ -60,7 +60,15 @@ class Test extends Component
     $karyawans = Karyawan::where('placement_id', '!=', 104)->get();
 
     Karyawan::where('placement_id', '!=', 104)->delete();
-    // dd('done');
+
+    // hapus data pada table user menyesuaikan data karyawan
+    $excluded = [50000, 60000, 70000, 80000, 100000];
+    $karyawanIds = Karyawan::pluck('id_karyawan')->toArray();
+    User::whereNotIn('username', $excluded)
+      ->whereNotIn('username', $karyawanIds)
+      ->delete();
+
+    dd('done');
 
 
     // $data = User::find("9a84287c-568f-4ace-9cce-cc30c759254f");

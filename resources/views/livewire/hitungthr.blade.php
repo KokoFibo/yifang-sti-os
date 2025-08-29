@@ -1,4 +1,6 @@
 <div>
+    @section('title', 'Hitung THR')
+
     <div class="card p-3">
         <div class="card-header">
             <div class="d-flex align-items-center gap-5">
