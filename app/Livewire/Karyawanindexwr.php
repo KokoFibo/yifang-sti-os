@@ -63,7 +63,6 @@ class Karyawanindexwr extends Component
     {
         dd('API belum tersedia saat ini');
         if ($id) {
-
             $respStore = Http::get('https://salary.accel365.id/api/store/' . $id);
             if ($respStore->successful()) {
                 $this->dispatch(
@@ -114,7 +113,6 @@ class Karyawanindexwr extends Component
     {
         $this->delete_id = $id;
         $data = Karyawan::find($id);
-
         $this->dispatch('show-delete-confirmation', text: $data->nama);
     }
 

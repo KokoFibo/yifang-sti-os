@@ -21,7 +21,7 @@
 
 
     {{-- <title>{{ config('app.name', 'Yifang Payroll') }}</title> --}}
-    <title>Yifang Payroll</title>
+    <title>STI Payroll</title>
 
 
     <!-- Fonts -->

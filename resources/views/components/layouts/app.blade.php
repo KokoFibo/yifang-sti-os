@@ -15,7 +15,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title') | Yifang </title>
+    <title>@yield('title') | STI </title>
 
 
 

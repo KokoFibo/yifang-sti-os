@@ -11,7 +11,6 @@ class ApiController extends Controller
 
     public function store($id)
     {
-
         $respKaryawan = Http::get('https://salary.yifang.co.id/api/getkaryawan/' . $id);
         $dataKaryawan = $respKaryawan->json();
 
