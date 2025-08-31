@@ -56,7 +56,7 @@ class Test extends Component
   public function render()
   {
     // hapus data karyawan dan sisakan y=hanya yang placement STI
-    dd('aman');
+    // dd('aman');
     $karyawans = Karyawan::where('placement_id', '!=', 104)->get();
 
     Karyawan::where('placement_id', '!=', 104)->delete();
@@ -77,7 +77,7 @@ class Test extends Component
 
     $data = Yfrekappresensi::where('date', '2025-05-30')->where('user_id', 3390)->first();
     // $data = Yfrekappresensi::where('date', '2025-05-30')->where('no_scan', 'No Scan')->delete();
-    // dd($data);
+    dd($data);
 
     // $data = Yfrekappresensi::join('karyawans', 'karyawans.id_karyawan', '=', 'yfrekappresensis.user_id')
     //   // ->where('yfrekappresensis.date', '2025-05-30')

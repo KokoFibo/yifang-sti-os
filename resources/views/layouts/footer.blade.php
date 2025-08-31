@@ -5,7 +5,7 @@
         Anything you want
     </div> --}}
     <!-- Default to the left -->
-    <strong>Copyright &copy; 2025 STI | All rights reserved.
+    <strong>Copyright &copy; 2025 Sinar Tekstil Indonesia | All rights reserved.
 </footer>
 
 </div>
