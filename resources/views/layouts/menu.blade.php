@@ -37,7 +37,8 @@ with font-awesome or any other icon font library -->
                 </a>
             </li>
         @endif
-        @if (Auth::user()->role > 5 || Auth::user()->role == 2)
+        {{-- Personnel Request utk STI di non aktifkan --}}
+        {{-- @if (Auth::user()->role > 5 || Auth::user()->role == 2)
             @if (isRequester(auth()->user()->username) || Auth::user()->role > 5)
                 <li class="nav-item {{ 'permohonan-personnel' == request()->path() ? 'bg-secondary rounded' : '' }}">
                     <a href="/permohonan-personnel" class="nav-link">
@@ -58,29 +59,7 @@ with font-awesome or any other icon font library -->
                 </li>
             @endif
 
-        @endif
-        {{-- username 1146 = Mega --}}
-        {{-- @if (Auth::user()->role > 5 || Auth::user()->role == 2 || auth()->user()->username == '1146')
-            @if (isTimeoff(auth()->user()->username) || Auth::user()->role > 5 || auth()->user()->username == '1146')
-                <li class="nav-item {{ 'timeoff-approve' == request()->path() ? 'bg-secondary rounded' : '' }}">
-                    <a href="/timeoff-approve" class="nav-link">
-                        <i class="nav-icon fa-regular fa-calendar"></i>
-                        <p class="personnel-request">
-                            {{ __('Time off Approval') }}
-                            @if ((auth()->user()->role >= 6 || auth()->user()->username == '1146') && check_for_new_Timeoff_request() != 0)
-                                <span class="badge">{{ check_for_new_Timeoff_request() }}
-                                </span>
-                            @endif
-                            @if (auth()->user()->role == 2 && check_for_menunggu_approval_Timeoff_request() != 0)
-                                <span class="badge">{{ check_for_menunggu_approval_Timeoff_request() }}
-                                </span>
-                            @endif
-                        </p>
-                    </a>
-                </li>
-            @endif
         @endif --}}
-
 
         @if (Auth::user()->role >= 5)
 
