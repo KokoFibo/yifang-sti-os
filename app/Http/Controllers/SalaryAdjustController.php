@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DateTime;
+use App\Models\Jobgrade;
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use App\Models\Bonuspotongan;
@@ -118,7 +119,6 @@ class SalaryAdjustController extends Controller
 
         return back()->with('success', "{$jumlahUpdate} data karyawan berhasil diperbarui.");
     }
-
     public function import(Request $request)
     {
         $request->validate([
@@ -136,6 +136,7 @@ class SalaryAdjustController extends Controller
             'Nama',
             'Departemen',
             'Posisi Jabatan',
+            'Job Grade',
             'Waktu Gabung',
             'Bulan Penyesuaian Sebelumnya',
             'Alasan',
@@ -155,6 +156,8 @@ class SalaryAdjustController extends Controller
         // $tanggal = $this->extractTanggal($rows[2][1]);
         $tanggal = Carbon::today()->toDateString();
         // dd($rows[2][1], $tanggal);
+        $jobgrades = Jobgrade::pluck('grade', 'grade')->toArray();
+
         $jumlahUpdate = 0;
 
         foreach ($rows as $index => $row) {
@@ -162,10 +165,13 @@ class SalaryAdjustController extends Controller
 
             $id_karyawan = isset($row[0]) ? (int) str_replace(',', '', $row[0]) : null;
             $nama = $row[1];
+            $jobGrade_raw = trim($row[4]) ?? null;
+
             $gaji_raw = $row[10] ?? null;
             $lembur_raw = $row[12] ?? null;
             $bonus_raw = $row[13] ?? null;
 
+            $jobGrade_sesudah = null;
             $gaji_sesudah = null;
             $lembur_baru = null;
             $bonus_baru = null;
@@ -197,6 +203,8 @@ class SalaryAdjustController extends Controller
                     return back()->with('error', "{$nama} - ID: {$id_karyawan}, GAJI BONUS di file excel harus numeric. {$jumlahUpdate} data karyawan berhasil diperbarui.");
                 }
             }
+
+
             // Skip jika ID kosong atau tidak ada data gaji/lembur
             if (!$id_karyawan || ($gaji_sesudah === null && $lembur_baru === null && $bonus_baru === null)) {
                 continue;
@@ -221,6 +229,18 @@ class SalaryAdjustController extends Controller
                 // Update gaji_overtime jika berbeda atau meskipun 0
                 if ($lembur_baru !== null && $karyawan->gaji_overtime != $lembur_baru) {
                     $karyawan->gaji_overtime = $lembur_baru;
+                    $updated = true;
+                }
+                // update Job Grade
+                if (!empty($jobGrade_raw) && isset($jobgrades[$jobGrade_raw])) {
+                    $jobGrade_sesudah = $jobgrades[$jobGrade_raw];
+                    $karyawan->level_jabatan = $jobGrade_sesudah;
+
+                    $updated = true;
+                } else {
+                    // Kalau tidak ditemukan, kasih default value
+                    $jobGrade_sesudah  = null;
+                    $karyawan->level_jabatan = $jobGrade_sesudah;
                     $updated = true;
                 }
 
