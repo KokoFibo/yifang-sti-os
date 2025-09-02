@@ -156,7 +156,8 @@ class SalaryAdjustController extends Controller
         // $tanggal = $this->extractTanggal($rows[2][1]);
         $tanggal = Carbon::today()->toDateString();
         // dd($rows[2][1], $tanggal);
-        $jobgrades = Jobgrade::pluck('grade', 'grade')->toArray();
+        $jobgrades = Jobgrade::pluck('id', 'grade')->toArray();
+
 
         $jumlahUpdate = 0;
 
