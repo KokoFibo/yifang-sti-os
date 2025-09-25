@@ -434,6 +434,8 @@ class YfpresensiController extends Controller
             $late = null;
             $no_scan = null;
             $shift = '';
+            $hari_khusus = cek_hari_khusus($tgl);
+
 
             // ini mulai masukin data perID
             $tablePresensi = DB::table('yfpresensis')
@@ -762,9 +764,12 @@ class YfpresensiController extends Controller
                 ($second_in === null && $second_out === null)
             );
 
-            if ($kh->date === '2025-05-30' && !$setengah_hari) {
-                $late = 0;
+            if ($hari_khusus) {
+                if ($kh->date === $hari_khusus->date && !$setengah_hari) {
+                    $late = 0;
+                }
             }
+
 
             if ($shift == 'Malam') {
 
