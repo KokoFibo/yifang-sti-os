@@ -5,7 +5,8 @@
             <div class="card-header bg-info nightowl-daylight">
                 <div class="d-flex justify-content-between">
 
-                    <label class=" col-form-label">{{ __('Bonus dan Potongan') }}</label>
+                    <label class=" col-form-label">{{ __('Bonus dan Potongan') }} {{ $month }}
+                        {{ $year }}</label>
                     {{-- spinner --}}
                     <div class="spinner-border text-warning" role="status" wire:loading wire:target="columnName">
                         <span class="visually-hidden">Loading...</span>
