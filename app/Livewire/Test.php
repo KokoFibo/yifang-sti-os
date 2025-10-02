@@ -65,7 +65,7 @@ class Test extends Component
   public function render()
   {
 
-
+    dd('aman');
 
 
     return view('livewire.test');

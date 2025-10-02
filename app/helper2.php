@@ -89,14 +89,6 @@ function build_payroll_os($month, $year)
     // proses ini yg lama1
     if ($pass) {
         foreach ($filterArray as $data) {
-            // $dataId = Yfrekappresensi::with('karyawan:id,jabatan,status_karyawan,metode_penggajian')
-
-            //     ->where('user_id', $data)
-            //     ->whereBetween('date', [Carbon::parse($year . '-' . $month . '-01'), Carbon::parse($year . '-' . $month . '-01')->endOfMonth()])
-            //     ->orderBy('date', 'desc')
-            //     ->get();
-
-
 
             $dataId = Yfrekappresensi::with('karyawan:id,jabatan_id,status_karyawan,metode_penggajian,placement_id,tanggal_blacklist')
                 ->where('user_id', $data)
@@ -118,6 +110,9 @@ function build_payroll_os($month, $year)
             //loop ini utk 1 user selama 22 hari
             $get_placement = get_placement($dataId[0]->user_id);
             foreach ($dataId as $d) {
+                $is_saturday = is_saturday($d->date);
+                $is_sunday = is_sunday($d->date);
+                $is_friday = is_friday($d->date);
                 if ($d->no_scan === null) {
                     $setengah_hari = (
                         ($d->first_in === null && $d->first_out !== null) ||
@@ -136,7 +131,7 @@ function build_payroll_os($month, $year)
                     $terlambat = late_check_jam_kerja_only($d->first_in, $d->first_out, $d->second_in, $d->second_out, $d->shift, $d->date, $d->karyawan->jabatan_id, $get_placement);
                     $langsungLembur = langsungLembur($d->second_out, $d->date, $d->shift, $d->karyawan->jabatan_id, $get_placement);
 
-                    if (is_sunday($d->date)) {
+                    if ($is_sunday) {
                         $jam_lembur = hitungLembur($d->overtime_in, $d->overtime_out) / 60 * 2
                             + $langsungLembur * 2;
                     } else {
@@ -144,11 +139,11 @@ function build_payroll_os($month, $year)
                     }
 
                     if ($d->shift == 'Malam') {
-                        if (is_saturday($d->date)) {
+                        if ($is_saturday) {
                             if ($jam_kerja >= 6) {
                                 $tambahan_shift_malam = 1;
                             }
-                        } elseif (is_sunday($d->date)) {
+                        } elseif ($is_sunday) {
                             if ($jam_kerja >= 16) {
                                 // $jam_lembur = $jam_lembur + 2;
                                 $tambahan_shift_malam = 1;
@@ -160,25 +155,25 @@ function build_payroll_os($month, $year)
                             }
                         }
                     }
-                    if ($jam_lembur >= 9 && is_sunday($d->date) == false && $d->karyawan->jabatan_id != 22) {
+                    if ($jam_lembur >= 9 && $is_sunday == false && $d->karyawan->jabatan_id != 22) {
                         $jam_lembur = 0;
                     }
                     // yig= 12, ysm= 13
                     if ($d->karyawan->placement_id == 12 || $d->karyawan->placement_id == 13 || $d->karyawan->jabatan_id == 17) {
-                        if (is_friday($d->date)) {
+                        if ($is_friday) {
                             $jam_kerja = 7.5;
-                        } elseif (is_saturday($d->date)) {
+                        } elseif ($is_saturday) {
                             $jam_kerja = 6;
                         } else {
                             $jam_kerja = 8;
                         }
                     }
 
-                    if ($d->karyawan->jabatan_id == 17 && is_sunday($d->date)) {
+                    if ($d->karyawan->jabatan_id == 17 && $is_sunday) {
                         $jam_kerja = hitung_jam_kerja($d->first_in, $d->first_out, $d->second_in, $d->second_out, $d->late, $d->shift, $d->date, $d->karyawan->jabatan_id, $get_placement);
                     }
 
-                    if ($d->karyawan->jabatan_id == 17 && is_saturday($d->date)) {
+                    if ($d->karyawan->jabatan_id == 17 && $is_saturday) {
                         // $jam_lembur = 0;
                     }
 
@@ -187,12 +182,12 @@ function build_payroll_os($month, $year)
                     // Jika hari libur nasional
                     // 23 = translator
                     if ($d->karyawan->jabatan_id != 23) {
-                        if (is_libur_nasional($d->date) &&  !is_sunday($d->date)) {
+                        if (is_libur_nasional($d->date) &&  !$is_sunday) {
                             $jam_kerja *= 2;
                             $jam_lembur *= 2;
                         }
                     } else {
-                        if (is_sunday($d->date)) {
+                        if ($is_sunday) {
                             $jam_kerja /= 2;
                             $jam_lembur /= 2;
                         }
@@ -208,7 +203,7 @@ function build_payroll_os($month, $year)
 
                     $total_hari_kerja++;
 
-                    if ((is_sunday($d->date) || is_libur_nasional($d->date)) && trim($d->karyawan->metode_penggajian) == 'Perbulan') {
+                    if (($is_sunday || is_libur_nasional($d->date)) && trim($d->karyawan->metode_penggajian) == 'Perbulan') {
                         $total_hari_kerja--;
                         $jam_kerja_libur += $jam_kerja;
                     }
