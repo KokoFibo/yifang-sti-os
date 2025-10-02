@@ -52,65 +52,22 @@ class Test extends Component
     $this->month = now()->month;
   }
 
+  public function DeleteBeforeSeptember()
+  {
+    Yfrekappresensi::whereDate('date', '<', '2025-09-01')->delete();
+    $this->dispatch(
+      'message',
+      type: 'success',
+      title: "Data seblum september 2025 berhasil dihapus."
+    );
+  }
 
   public function render()
   {
-    dd('aman');
-    $data = Yfrekappresensi::whereMonth('date', 9)->where('no_scan', '!=', null)->get();
-    dd($data);
-    // hapus data karyawan dan sisakan y=hanya yang placement STI
-    dd('aman');
-    // $karyawans = Karyawan::where('placement_id', '!=', 104)->get();
-
-    // Karyawan::where('placement_id', '!=', 104)->delete();
-
-    // // hapus data pada table user menyesuaikan data karyawan
-    // $excluded = [50000, 60000, 70000, 80000, 100000];
-    // $karyawanIds = Karyawan::pluck('id_karyawan')->toArray();
-    // User::whereNotIn('username', $excluded)
-    //   ->whereNotIn('username', $karyawanIds)
-    //   ->delete();
-
-    // dd('done');
 
 
-    // $data = User::find("9a84287c-568f-4ace-9cce-cc30c759254f");
-    // dd($data);
 
 
-    $data = Yfrekappresensi::where('date', '2025-05-30')->where('user_id', 3390)->first();
-    // $data = Yfrekappresensi::where('date', '2025-05-30')->where('no_scan', 'No Scan')->delete();
-    dd($data);
-
-    // $data = Yfrekappresensi::join('karyawans', 'karyawans.id_karyawan', '=', 'yfrekappresensis.user_id')
-    //   // ->where('yfrekappresensis.date', '2025-05-30')
-    //   ->whereMonth('yfrekappresensis.date', 5)
-    //   ->whereYear('yfrekappresensis.date', 2025)
-    //   ->where('karyawans.status_karyawan', 'Blacklist')
-    //   ->where('karyawans.tanggal_blacklist', '<', '2025-05-01') // ini kuncinya
-    //   ->distinct()
-    //   ->pluck('yfrekappresensis.user_id');
-
-    // dd($data);
-
-
-    $data = Yfrekappresensi::join('karyawans', 'karyawans.id_karyawan', '=', 'yfrekappresensis.user_id')
-      ->where('yfrekappresensis.date', '2025-05-30')
-      ->where(function ($query) {
-        $query->where(function ($q) {
-          $q->whereNull('yfrekappresensis.first_in')
-            ->whereNull('yfrekappresensis.first_out');
-        })->orWhere(function ($q) {
-          $q->whereNull('yfrekappresensis.second_in')
-            ->whereNull('yfrekappresensis.second_out');
-        });
-      })
-      ->get();
-
-
-    //51857 hari ini
-    return view('livewire.test', [
-      'data' => $data
-    ]);
+    return view('livewire.test');
   }
 }
