@@ -145,6 +145,7 @@
                         <div>
                             <select class="form-select" wire:model.live="month">
                                 {{-- <option selected>Open this select menu</option>  --}}
+                                <option value="9">Sept 2025</option>
                                 @foreach ($select_month as $sm)
                                     <option value="{{ $sm }}">{{ monthName($sm) }}</option>
                                 @endforeach
