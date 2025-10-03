@@ -761,20 +761,245 @@ function build_payroll_os($month, $year)
         }
     }
 
-    // ok 5
-    //  Zheng Guixin 1
-    // Eddy Chan 2
-    // Yang Xiwen 3
-    // Rudy Chan 4
-    // Yin kai 5
-    // Li meilian 25
-    // Wanto 6435
-    // Chan Kai Wan 6
 
 
-    $idArrTKA = [1, 3, 5, 25, 6];
-    $idArrTionghoa = [4, 2, 6435]; // TKA hanya 3 orang
-    $idKhusus = [4, 2, 6435, 1, 3, 5, 6, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 800, 900, 5576, 5693, 6566, 7511, 6576, 6577, 6578, 6579, 8127]; //TKA hanya 3 no didepan
+    // entry Khusus TKA dan tioinghoa yang tanpa absen
+
+    // $idArrTKA = [1, 3, 5, 25, 6];
+    // $idArrTionghoa = [4, 2, 6435]; // TKA hanya 3 orang
+    // $idKhusus = [4, 2, 6435, 1, 3, 5, 6, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 800, 900, 5576, 5693, 6566, 7511, 6576, 6577, 6578, 6579, 8127]; //TKA hanya 3 no didepan
+
+
+    $idArrTionghoa = []; // TKA hanya 3 orang
+    // $idKhusus = [4, 2, 6435, 1, 3, 5, 6, 21, 22, 23, 24,  26,  28, 30, 31, 32, 33, 34, 35, 800,  5576, 6566, 7511, 6576, 6577, 6578, 6579, 8127, 7613, 8227, 8228, 8233, 8234, 8235]; //TKA hanya 3 no didepan
+    // update juga gaji khusus yg di helpers line 84
+
+    $idKhusus = Karyawan::where('etnis', 'China')
+        ->whereNotIn('status_karyawan', ['Blacklist', 'Resigned'])
+        // ->whereNot('status_karyawan', 'Blacklist')
+        ->pluck('id_karyawan')
+        ->toArray();
+    $idKhusus = array_merge($idKhusus, $idArrTionghoa);
+    foreach ($idKhusus as $id) {
+        // bonus dan potongan
+
+        $all_bonus = 0;
+        $all_potongan = 0;
+        $bonuspotongan = Bonuspotongan::whereMonth('tanggal', $month)
+            ->whereYear('tanggal', $year)->where('user_id', $id)
+            ->first();
+        if ($bonuspotongan) {
+            $all_bonus = $bonuspotongan->uang_makan + $bonuspotongan->bonus_lain;
+            $all_potongan = $bonuspotongan->baju_esd + $bonuspotongan->gelas + $bonuspotongan->sandal + $bonuspotongan->seragam + $bonuspotongan->sport_bra + $bonuspotongan->hijab_instan + $bonuspotongan->id_card_hilang + $bonuspotongan->masker_hijau + $bonuspotongan->potongan_lain;
+        } else {
+            $all_bonus = 0;
+            $all_potongan = 0;
+        }
+
+
+        // End
+
+        $data_id = Karyawan::where('id_karyawan', $id)->first();
+        $data_karyawan = Karyawan::find($data_id->id);
+
+        if ($data_karyawan->potongan_JP == 1) {
+            if ($data_karyawan->gaji_bpjs <= 10547400) {
+                $jp = $data_karyawan->gaji_bpjs * 0.01;
+            } else {
+                $jp = 10547400 * 0.01;
+            }
+        } else {
+            $jp = 0;
+        }
+
+        if ($data_karyawan->potongan_JHT == 1) {
+            $jht = $data_karyawan->gaji_bpjs * 0.02;
+        } else {
+            $jht = 0;
+        }
+
+        if ($data_karyawan->potongan_kesehatan == 1) {
+            $data_gaji_bpjs = 0;
+            if ($data_karyawan->gaji_bpjs >= 12000000) $data_gaji_bpjs = 12000000;
+            else $data_gaji_bpjs = $data_karyawan->gaji_bpjs;
+            $kesehatan = $data_gaji_bpjs * 0.01;
+            $kesehatan_company = ($data_gaji_bpjs * 4) / 100;
+        } else {
+            $kesehatan = 0;
+            $kesehatan_company = 0;
+        }
+
+        if ($data_karyawan->potongan_JKK == 1) {
+            $jkk = 1;
+        } else {
+            $jkk = 0;
+        }
+        if ($data_karyawan->potongan_JKM == 1) {
+            $jkm = 1;
+        } else {
+            $jkm = 0;
+        }
+
+
+
+
+        if ($data_karyawan->potongan_JKK) {
+            $jkk_company = ($data_karyawan->gaji_bpjs * 0.24) / 100;
+        } else {
+            $jkk_company = 0;
+        }
+
+        if ($data_karyawan->potongan_JKM) {
+            $jkm_company = ($data_karyawan->gaji_bpjs * 0.3) / 100;
+        } else {
+            $jkm_company = 0;
+        }
+
+        if (
+            $data_karyawan->gaji_pokok != 0
+        ) {
+            // $gaji_bpjs_adjust = $data_karyawan->gaji_bpjs * $total_gaji_sebelum_tax / $data_karyawan->gaji_pokok;
+            $gaji_bpjs_adjust = $data_karyawan->gaji_bpjs * $data_karyawan->gaji_pokok / $data_karyawan->gaji_pokok;
+        } else {
+            // Handle the case where gaji_pokok is zero (e.g., log an error or assign a default value)
+            $gaji_bpjs_adjust = 0; // or another fallback value
+            error_log("Division by zero error: gaji_pokok is zero for karyawan ID: " . $data_karyawan->id);
+        }
+        // hitung pph21
+        $pph21 = hitung_pph21(
+            $data_karyawan->gaji_bpjs,
+            // $gaji_bpjs_adjust,
+            $data_karyawan->ptkp,
+            $data_karyawan->potongan_JHT,
+            $data_karyawan->potongan_JP,
+            $data_karyawan->potongan_JKK,
+            $data_karyawan->potongan_JKM,
+            $data_karyawan->potongan_kesehatan,
+            0,
+            0,
+            $all_bonus,
+            0,
+            $data_karyawan->company_id
+        );
+        // $pph21 = hitung_pph21(
+        //     $data_karyawan->gaji_bpjs,
+        //     // $gaji_bpjs_adjust,
+        //     $data_karyawan->ptkp,
+        //     $data_karyawan->potongan_JHT,
+        //     $data_karyawan->potongan_JP,
+        //     $data_karyawan->potongan_JKK,
+        //     $data_karyawan->potongan_JKM,
+        //     $data_karyawan->potongan_kesehatan,
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     $data_karyawan->company_id
+        // );
+
+
+
+        $total_tax = $gaji_bpjs_adjust + $jkk_company + $jkm_company + $kesehatan_company;
+
+
+
+
+
+        $is_exist = Payroll::where('id_karyawan', $id)->whereMonth('date', $month)
+            ->whereYear('date', $year)->first();
+        if ($is_exist) {
+            $data = Payroll::find($is_exist->id);
+            $data->bpjs_adjustment = $gaji_bpjs_adjust;
+            if ($data->metode_penggajian == "Perjam") {
+                $data->gaji_bulan_ini = total_gaji_perjam($data->gaji_pokok, $data->jam_kerja);
+            } else {
+                // sore
+                $data->gaji_bulan_ini = total_gaji_bulanan(
+                    $data->gaji_pokok,
+                    $data->hari_kerja,
+                    $total_n_hari_kerja,
+                    $jumlah_libur_nasional,
+                    $data->date,
+                    $data->id_karyawan,
+                    $data->status_karyawan
+                );
+            }
+            $data->jp = $jp;
+            $data->jht = $jht;
+            $data->kesehatan = $kesehatan;
+            $data->nama = $data_karyawan->nama;
+            $data->id_karyawan = $data_karyawan->id_karyawan;
+            $data->jabatan_id = $data_karyawan->jabatan_id;
+            $data->company_id = $data_karyawan->company_id;
+            $data->department_id = $data_karyawan->department_id;
+            $data->placement_id = $data_karyawan->placement_id;
+            $data->status_karyawan = $data_karyawan->status_karyawan;
+            $data->metode_penggajian = $data_karyawan->metode_penggajian;
+            $data->nomor_rekening = $data_karyawan->nomor_rekening;
+            $data->nama_bank = $data_karyawan->nama_bank;
+            $data->gaji_pokok = $data_karyawan->gaji_pokok;
+            $data->gaji_bpjs = $data_karyawan->gaji_bpjs;
+            $data->ptkp = $data_karyawan->ptkp;
+            $data->jkk = $jkk;
+            $data->jkm = $jkm;
+            $data->date = $year . '-' . $month . '-01';
+            $data->pph21  = $pph21;
+            $data->subtotal = $data_karyawan->gaji_pokok;
+            $data->bonus1x = $all_bonus;
+            $data->potongan1x = $all_potongan;
+            $data->total = $data_karyawan->gaji_pokok - ($jp + $jht + $kesehatan) - $pph21 - $all_potongan + $all_bonus;
+            $data->hari_kerja = $total_n_hari_kerja - $jumlah_libur_nasional;
+            $data->jam_kerja = 0;
+            $data->jam_lembur = 0;
+            $data->total_bpjs = $total_tax;
+
+            $data->save();
+        } else {
+            $data = new Payroll();
+            // $data->bpjs_adjustment = $gaji_bpjs_adjust;
+            // $data->gaji_bulan_ini = $data_karyawan->gaji_pokok;
+
+            $data->jp = $jp;
+            $data->jht = $jht;
+            $data->kesehatan = $kesehatan;
+            $data->nama = $data_karyawan->nama;
+            $data->id_karyawan = $data_karyawan->id_karyawan;
+
+            // $data->jabatan = nama_jabatan($data_karyawan->jabatan_id);
+            // $data->company = nama_company($data_karyawan->company_id);
+            // $data->departemen = nama_department($data_karyawan->department_id);
+            // $data->placement = nama_placement($data_karyawan->placement_id);
+
+            $data->jabatan_id = $data_karyawan->jabatan_id;
+            $data->company_id = $data_karyawan->company_id;
+            $data->department_id = $data_karyawan->department_id;
+            $data->placement_id = $data_karyawan->placement_id;
+
+            $data->status_karyawan = $data_karyawan->status_karyawan;
+            $data->metode_penggajian = $data_karyawan->metode_penggajian;
+            $data->nomor_rekening = $data_karyawan->nomor_rekening;
+            $data->nama_bank = $data_karyawan->nama_bank;
+            $data->gaji_pokok = $data_karyawan->gaji_pokok;
+            $data->gaji_bpjs = $data_karyawan->gaji_bpjs;
+            $data->ptkp = $data_karyawan->ptkp;
+            $data->jkk = $jkk;
+            $data->jkm = $jkm;
+            $data->date = $year . '-' . $month . '-01';
+            $data->pph21  = $pph21;
+            $data->subtotal = $data_karyawan->gaji_pokok;
+            $data->bonus1x = $all_bonus;
+            $data->potongan1x = $all_potongan;
+            $data->total = $data_karyawan->gaji_pokok - ($jp + $jht + $kesehatan) - $pph21 - $all_potongan + $all_bonus;
+            $data->hari_kerja = $total_n_hari_kerja - $jumlah_libur_nasional;
+            $data->jam_kerja = 0;
+            $data->jam_lembur = 0;
+            $data->total_bpjs = $total_tax;
+            // dd($total_tax, $data_karyawan->id_karyawan);
+
+
+            $data->save();
+        }
+    }
 
 
 

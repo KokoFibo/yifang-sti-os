@@ -65,6 +65,7 @@ class Test extends Component
   public function render()
   {
 
+
     dd('aman');
 
 
