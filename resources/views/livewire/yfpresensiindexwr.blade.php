@@ -265,17 +265,17 @@
                                                             class="fa-regular fa-pen-to-square"></i></button>
                                                 @endif
                                             @endif
+                                            <button type="button" class="btn btn-warning btn-sm nightowl-daylight"
+                                                wire:click="showDetail_baru({{ $data->user_id }})"
+                                                data-bs-toggle="modal" data-bs-target="#update-form-modal"><i
+                                                    class="fa-solid fa-magnifying-glass"></i></button>
                                             @if (Auth::user()->role == 8)
                                                 <button type="button"
                                                     class="btn btn-warning btn-sm nightowl-daylight"
-                                                    wire:click="showDetail_baru({{ $data->user_id }})"
+                                                    wire:click="showDetail({{ $data->user_id }})"
                                                     data-bs-toggle="modal" data-bs-target="#update-form-modal"><i
-                                                        class="fa-solid fa-magnifying-glass"></i>baru</button>
+                                                        class="fa-solid fa-magnifying-glass"></i>lama</button>
                                             @endif
-                                            <button type="button" class="btn btn-warning btn-sm nightowl-daylight"
-                                                wire:click="showDetail({{ $data->user_id }})" data-bs-toggle="modal"
-                                                data-bs-target="#update-form-modal"><i
-                                                    class="fa-solid fa-magnifying-glass"></i></button>
 
                                             @if (Auth::user()->role > 5)
                                                 <button {{-- wire:click="confirmDelete(`{{ $data->id }}`)" --}} wire:click="delete({{ $data->id }})"
