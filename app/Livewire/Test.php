@@ -64,11 +64,49 @@ class Test extends Component
 
   public function render()
   {
+    $payrolls = Payroll::whereYear('date', 2025)
+      ->whereMonth('date', 9)
+      ->get();
 
+    $beda = []; // untuk menampung data yang tidak sama
+    $cx = 0;
 
-    dd('aman');
+    foreach ($payrolls as $payroll) {
+      $presensis = Yfrekappresensi::whereYear('date', 2025)
+        ->whereMonth('date', 9)
+        ->where('user_id', $payroll->id_karyawan)
+        ->get();
 
+      // $total_hari_kerja = Yfrekappresensi::whereYear('date', 2025)
+      //   ->whereMonth('date', 9)
+      //   ->where('user_id', $payroll->id_karyawan)
+      //   ->count();
 
-    return view('livewire.test');
+      $total_jam_kerja = $presensis->sum('total_jam_kerja');
+      $total_jam_lembur = $presensis->sum('total_jam_lembur');
+      // cek perbedaan
+      // $payroll->hari_kerja != $total_hari_kerja ||
+      if (
+        $payroll->jam_kerja != $total_jam_kerja ||
+        $payroll->jam_lembur != $total_jam_lembur
+      ) {
+        $beda[] = [
+          'id_karyawan' => $payroll->id_karyawan,
+          // 'hari_kerja_payroll' => $payroll->hari_kerja,
+          // 'hari_kerja_presensi' => $total_hari_kerja,
+          'jam_kerja_payroll' => $payroll->jam_kerja,
+          'jam_kerja_presensi' => $total_jam_kerja,
+          'jam_lembur_payroll' => $payroll->jam_lembur,
+          'jam_lembur_presensi' => $total_jam_lembur,
+        ];
+      } else {
+        $cx++;
+      }
+    }
+
+    return view('livewire.test', [
+      'beda' => $beda,
+      'jumlah_sama' => $cx,
+    ]);
   }
 }
