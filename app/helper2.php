@@ -159,16 +159,19 @@ function build_payroll_os($month, $year)
                         $jam_lembur = 0;
                     }
                     // yig= 12, ysm= 13
-                    if ($d->karyawan->placement_id == 12 || $d->karyawan->placement_id == 13 || $d->karyawan->jabatan_id == 17) {
+                    if ($d->karyawan->jabatan_id == 17) {
                         if ($is_friday) {
-                            $jam_kerja = 7.5;
+                            if ($d->shift == 'Malam') {
+                                $jam_kerja = 8;
+                            } else {
+                                $jam_kerja = 7.5;
+                            }
                         } elseif ($is_saturday) {
                             $jam_kerja = 6;
                         } else {
                             $jam_kerja = 8;
                         }
                     }
-
                     if ($d->karyawan->jabatan_id == 17 && $is_sunday) {
                         $jam_kerja = hitung_jam_kerja($d->first_in, $d->first_out, $d->second_in, $d->second_out, $d->late, $d->shift, $d->date, $d->karyawan->jabatan_id, $get_placement);
                     }

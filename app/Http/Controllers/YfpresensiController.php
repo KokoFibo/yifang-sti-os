@@ -1331,6 +1331,10 @@ class YfpresensiController extends Controller
 
             if (is_friday($kh->date)) $late = null;
 
+            if (is_sunday($kh->date) || is_libur_nasional($kh->date)) {
+                $total_hari_kerja = 0;
+            }
+
             // shift malam
             if ($shift == 'Malam') {
                 $tgl_khusus = Harikhusus::where('date', $tgl)->first();
