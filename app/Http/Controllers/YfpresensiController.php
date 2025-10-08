@@ -1318,9 +1318,10 @@ class YfpresensiController extends Controller
             $total_jam_kerja = 0;
             $total_jam_lembur = 0;
 
-            if (isset($hasil['jam_kerja']) && $hasil['jam_kerja'] > 4) {
-                $total_hari_kerja = 1;
-            }
+            // Ini perhitungan jika dibawah 4 jam tidak dihitung hari kerja
+            // if (isset($hasil['jam_kerja']) && $hasil['jam_kerja'] > 4) {
+            //     $total_hari_kerja = 1;
+            // }
 
             if (isset($hasil['jam_kerja'])) {
                 $total_jam_kerja = $hasil['jam_kerja'];
@@ -1331,8 +1332,8 @@ class YfpresensiController extends Controller
 
             if (is_friday($kh->date)) $late = null;
 
-            if (is_sunday($kh->date) || is_libur_nasional($kh->date)) {
-                $total_hari_kerja = 0;
+            if (is_sunday($kh->date)) {
+                $total_hari_kerja = 2;
             }
 
             // shift malam
