@@ -824,6 +824,7 @@ class YfpresensiController extends Controller
                 // Kalau bukan libur nasional tapi Minggu
                 $jam_kerja_libur = 16;
             }
+            if ($late > 0) $tambahan_shift_malam = 0;
 
 
             Yfrekappresensi::create([
