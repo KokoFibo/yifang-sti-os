@@ -380,7 +380,7 @@ class YfpresensiController extends Controller
 
 
 
-                //  pakai Chunk
+                // pakai Chunk
                 $Yfpresensidata[] = [
                     'user_id' => $user_id,
 
@@ -420,6 +420,12 @@ class YfpresensiController extends Controller
             ->select('user_id', 'date')
             ->distinct()
             ->get();
+
+        $is_sunday = is_sunday($tgl);
+        $is_saturday = is_saturday($tgl);
+        $is_friday = is_friday($tgl);
+        $is_hari_libur_nasional = is_libur_nasional($tgl);
+
         foreach ($karyawanHadir as $kh) {
             $tgl_delete = $kh->date;
             $user_id = $kh->user_id;
@@ -466,9 +472,9 @@ class YfpresensiController extends Controller
                                 else $second_in = $tp->time;
                             } elseif (Carbon::parse($tp->time)->betweenIncluded('12:31', '14:00')) {
                                 if ($second_in == '') $second_in = $tp->time;
-                                // perubahan second_out dan overtime_in yg tidak terdeteksi,  untuk jam kerja sabtu 
+                                // perubahan second_out dan overtime_in yg tidak terdeteksi, untuk jam kerja sabtu
                                 // } elseif (Carbon::parse($tp->time)->betweenIncluded('14:01', '17:30')) {
-                                //     $second_out = $tp->time;
+                                // $second_out = $tp->time;
 
                                 // } elseif (Carbon::parse($tp->time)->betweenIncluded('14:01', '16:59') && $second_out == null) {
                             } elseif (Carbon::parse($tp->time)->betweenIncluded('14:01', '17:59') && $second_out == null) {
@@ -599,22 +605,22 @@ class YfpresensiController extends Controller
                                 if ($first_out == '') $first_out = $tp->time;
                                 else $second_in = $tp->time;
                                 // if ($flag == 0) {
-                                //     $first_out = $tp->time;
-                                //     if (Carbon::parse($tp->time)->betweenIncluded('10:01', '11:59')) {
-                                //         $flag = 1;
-                                //     } else {
-                                //         $flag = 2;
-                                //     }
+                                // $first_out = $tp->time;
+                                // if (Carbon::parse($tp->time)->betweenIncluded('10:01', '11:59')) {
+                                // $flag = 1;
+                                // } else {
+                                // $flag = 2;
+                                // }
                                 // }
                                 // // ook
                                 // if ($flag == 1) {
-                                //     $second_in = $tp->time;
+                                // $second_in = $tp->time;
                                 // }
                             } elseif (Carbon::parse($tp->time)->betweenIncluded('12:31', '14:00')) {
                                 if ($second_in == '') $second_in = $tp->time;
-                                // perubahan second_out dan overtime_in yg tidak terdeteksi,  untuk jam kerja sabtu 
+                                // perubahan second_out dan overtime_in yg tidak terdeteksi, untuk jam kerja sabtu
                                 // } elseif (Carbon::parse($tp->time)->betweenIncluded('14:01', '17:30')) {
-                                //     $second_out = $tp->time;
+                                // $second_out = $tp->time;
 
                             } elseif (Carbon::parse($tp->time)->betweenIncluded('15:01', '17:59') && $second_out == null) {
                                 $second_out = $tp->time;
@@ -736,7 +742,7 @@ class YfpresensiController extends Controller
                 $id_karyawan = $dataKaryawan->id;
             }
             // pakai code dibawah ini, jika masih banyak second yang masuk ke malam hari second_in code
-            // if(Carbon::parse( $second_in )->betweenIncluded( '11:01', '14:00' ))   $shift = 'Pagi';
+            // if(Carbon::parse( $second_in )->betweenIncluded( '11:01', '14:00' )) $shift = 'Pagi';
             // ook
             if ($no_scan != null) $late = null;
             // lanjutkan
@@ -745,6 +751,7 @@ class YfpresensiController extends Controller
             $total_hari_kerja = 0;
             $total_jam_kerja = 0;
             $total_jam_lembur = 0;
+            $jam_kerja_libur = 0;
 
             if (isset($hasil['jam_kerja']) && $hasil['jam_kerja'] > 4) {
                 $total_hari_kerja = 1;
@@ -773,12 +780,12 @@ class YfpresensiController extends Controller
 
             if ($shift == 'Malam') {
 
-                if (is_saturday($tgl)) {
+                if ($is_saturday) {
                     if ($total_jam_kerja >= 6) {
                         // $jam_lembur = $jam_lembur + 1;
                         $tambahan_shift_malam = 1;
                     }
-                } else if (is_sunday($tgl)) {
+                } else if ($is_sunday) {
                     if ($total_jam_kerja >= 16) {
                         // $jam_lembur = $jam_lembur + 2;
                         $tambahan_shift_malam = 1;
@@ -795,15 +802,28 @@ class YfpresensiController extends Controller
 
             // khusus untuk security kode jabatan 17
             if ($dataKaryawan->jabatan_id == 17 && $shift == 'Malam') {
-                if (is_sunday($tgl) || is_libur_nasional($tgl)) {
+                if ($is_sunday || $is_hari_libur_nasional) {
                     $total_jam_kerja = min($total_jam_kerja, 16);
-                } elseif (is_saturday($tgl)) {
+                } elseif ($is_saturday) {
                     $total_jam_kerja = min($total_jam_kerja, 6);
                 } else {
                     $total_jam_kerja = min($total_jam_kerja, 8);
                 }
             }
 
+            if ($is_hari_libur_nasional) {
+                // Jika libur nasional, cek hari spesifik
+                if ($is_saturday) {
+                    $jam_kerja_libur = 12;
+                } elseif ($is_friday) {
+                    $jam_kerja_libur = 15;
+                } else {
+                    $jam_kerja_libur = 16; // Libur nasional selain Jumat/Sabtu
+                }
+            } elseif ($is_sunday) {
+                // Kalau bukan libur nasional tapi Minggu
+                $jam_kerja_libur = 16;
+            }
 
 
             Yfrekappresensi::create([
@@ -821,7 +841,7 @@ class YfpresensiController extends Controller
                 'total_jam_kerja' => $total_jam_kerja,
                 'total_hari_kerja' => $total_hari_kerja,
                 'total_jam_lembur' => $total_jam_lembur,
-                // 'total_jam_kerja_libur' => $jam_kerja_libur,
+                'total_jam_kerja_libur' => $jam_kerja_libur,
 
                 'shift' => $shift,
                 'late' => $late,
