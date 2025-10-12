@@ -129,7 +129,7 @@
                                     'shift_malam' => 'Tambahan Shift Malam',
                                 ];
                             @endphp
-                            <th>action
+                            <th>
                             </th>
                             @foreach ($columns as $field => $label)
                                 {{-- hanya tampilkan kolom total_jam_kerja_libur kalau role == 8 --}}
