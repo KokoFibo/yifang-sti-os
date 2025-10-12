@@ -27,6 +27,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
+function tgl_lengkap($tgl)
+{
+    if (!$tgl) return null;
+    return Carbon::parse($tgl)
+        ->locale('id')
+        ->translatedFormat('d M Y');
+}
+
 function getGrade($id)
 {
     $data = Jobgrade::where('id', $id)->first();
