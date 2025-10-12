@@ -66,7 +66,7 @@ class Yfdeletetanggalpresensiwr extends Component
     public function exit()
     {
         $this->reset();
-        return redirect()->to('/yfpresensiindexwr');
+        return redirect()->to('/newpresensi');
         // or sepertoi dibawah juga bisa
         // return redirect('/yfpresensiindexwr');
     }
