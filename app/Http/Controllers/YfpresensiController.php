@@ -785,8 +785,8 @@ class YfpresensiController extends Controller
                         // $jam_lembur = $jam_lembur + 1;
                         $tambahan_shift_malam = 1;
                     }
-                } else if ($is_sunday) {
-                    if ($total_jam_kerja >= 16) {
+                } else if ($is_sunday || $is_hari_libur_nasional) {
+                    if ($total_jam_kerja > 0) {
                         // $jam_lembur = $jam_lembur + 2;
                         $tambahan_shift_malam = 1;
                     }
