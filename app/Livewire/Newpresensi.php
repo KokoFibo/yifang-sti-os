@@ -55,10 +55,8 @@ class Newpresensi extends Component
 
     public $placements, $jabatans, $bulan_terakhir;
 
-    public function delete_no_scan()
+    public function delete_no_scan1()
     {
-
-
         $data = Yfrekappresensi::find($this->delete_id);
         // dd($this->delete_id, $data);
         if ($data->no_scan == "") {
@@ -314,7 +312,8 @@ class Newpresensi extends Component
             $this->late_user_id = $data->user_id;
             $this->shift = $data->shift;
             $this->date = $data->date;
-            if ($data->no_scan_history == 'No Scan' && $data->no_scan == '') {
+            // if ($data->no_scan_history == 'No Scan' && $data->no_scan == '') {
+            if ($data->no_scan_history == 'No Scan') {
                 $this->delete_no_scan_history = true;
             } else {
                 $this->delete_no_scan_history = false;
