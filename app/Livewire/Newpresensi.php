@@ -24,7 +24,7 @@ class Newpresensi extends Component
     public $tanggal;
     // public $sortField = 'user_id';
     // public $sortDirection = 'asc';
-    public $sortField = 'no_scan';
+    public $sortField = 'no_scan_history';
     public $sortDirection = 'desc';
     public $search = '';
     public $placementFilter = '';
@@ -39,6 +39,7 @@ class Newpresensi extends Component
     public $is_kosong = false, $is_no_scan = false;
     public $rowsPerPage;
     public $showDetailModal = false;
+    public $delete_no_scan_history = false, $is_delete = 0;
 
 
     // variable untuk menampilkan detail
@@ -50,9 +51,35 @@ class Newpresensi extends Component
     public $total_tambahan_shift_malam;
     public $month, $year, $user_id, $name;
     public $is_presensi_locked, $is_sunday, $is_hari_libur_nasional, $is_friday;
-    public $show_name, $show_id;
+    public $show_name, $show_id, $delete_id;
 
     public $placements, $jabatans, $bulan_terakhir;
+
+    public function delete_no_scan()
+    {
+
+
+        $data = Yfrekappresensi::find($this->delete_id);
+        // dd($this->delete_id, $data);
+        if ($data->no_scan == "") {
+            $data->no_scan_history = null;
+            $data->save();
+            // $this->dispatch('success', message: 'No Scan History sudah di delete');
+            $this->dispatch(
+                'message',
+                type: 'success',
+                title: 'No Scan History sudah di delete',
+            );
+        } else {
+            // $this->dispatch('error', message: 'No Scan harus di bersihkan dulu');
+            $this->dispatch(
+                'message',
+                type: 'error',
+                title: 'No Scan harus di bersihkan dulu',
+            );
+        }
+        $this->delete_no_scan_history = false;
+    }
 
 
 
@@ -287,9 +314,15 @@ class Newpresensi extends Component
             $this->late_user_id = $data->user_id;
             $this->shift = $data->shift;
             $this->date = $data->date;
+            if ($data->no_scan_history == 'No Scan' && $data->no_scan == '') {
+                $this->delete_no_scan_history = true;
+            } else {
+                $this->delete_no_scan_history = false;
+            }
 
             $this->show_name = getName($data->user_id);
             $this->show_id = $data->user_id;
+            $this->delete_id = $data->id;
 
             // 🔥 Tampilkan modal lewat event browser
             $this->dispatch('show-edit-modal');
@@ -325,6 +358,7 @@ class Newpresensi extends Component
     }
     public function update()
     {
+
         // $this->validate([
         //     'first_in' => 'date_format:H:i|nullable',
         //     'first_out' => 'date_format:H:i|nullable',
@@ -354,6 +388,7 @@ class Newpresensi extends Component
         $data->no_scan = noScan($this->first_in, $this->first_out, $this->second_in, $this->second_out, $this->overtime_in, $this->overtime_out);
         $data->late = late_check_detail($this->first_in, $this->first_out, $this->second_in, $this->second_out, $this->overtime_in, $this->shift, $this->date, $this->late_user_id);
         $data->late_history = $data->late;
+        // dd($data->no_scan, $this->first_in, $this->first_out, $this->second_in, $this->second_out, $this->overtime_in, $this->overtime_out);
 
         // jadwal puasa
         // dd($data->late);
@@ -453,15 +488,45 @@ class Newpresensi extends Component
             }
         }
 
-        $data->save();
         $this->checkData();
-        // Tutup modal
+        $berhasil = 1;
+        if ($this->is_delete) {
+            $berhasil = 3;
+            if ($data->no_scan == "") {
+                $data->no_scan_history = null;
+                $berhasil = 2;
+            }
+        }
+        $data->save();
+        $this->delete_no_scan_history = false;
+        $this->is_delete = false;
         $this->dispatch('hide-edit-modal');
-        $this->dispatch(
-            'message',
-            type: 'success',
-            title: 'Data Presensi Sudah di Update',
-        );;
+        if ($berhasil == 1) {
+            $this->dispatch(
+                'message',
+                type: 'success',
+                title: 'Data Presensi Sudah di Update',
+            );
+        } elseif ($berhasil == 2) {
+            $this->dispatch(
+                'message',
+                type: 'success',
+                title: 'Data Presensi & No Scan History Sudah di Update',
+            );
+        } else {
+            $this->dispatch(
+                'message',
+                type: 'error',
+                title: 'No Scan History GAGAL di delete',
+            );
+        }
+
+        // Tutup modal
+        // $this->dispatch(
+        //     'message',
+        //     type: 'success',
+        //     title: 'Data Presensi Sudah di Update',
+        // );;
     }
 
     public function mount()

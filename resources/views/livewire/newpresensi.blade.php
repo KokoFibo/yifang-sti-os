@@ -1,6 +1,6 @@
 <div class="m-2">
     <div class="card shadow-sm">
-        <div class="card-header {{ $is_hari_libur_nasional || $is_sunday ? 'bg-success' : 'bg-primary' }} text-white">
+        <div class="card-header {{ $is_hari_libur_nasional || $is_sunday ? 'bg-success text-light' : '' }} ">
             <h4 class="fs-5">
                 Data Presensi
             </h4>
@@ -103,7 +103,6 @@
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm align-middle text-nowrap text-sm">
                     <thead class="table-light text-center">
-
                         <tr>
                             @php
                                 $columns = [
@@ -152,9 +151,7 @@
 
                     <tbody class="text-center">
                         @foreach ($datas as $data)
-                            <tr class="
-        @if ($data->no_scan > 0) table-warning @endif
-    ">
+                            <tr class="@if ($data->no_scan > 0) table-warning @endif">
                                 <td>
                                     @if (!$is_presensi_locked || Auth::user()->role == 8)
                                         <button class="btn btn-secondary btn-xs"
@@ -200,7 +197,19 @@
                                     <td>{{ $data->total_jam_kerja_libur }}</td>
                                 @endif
                                 <td>{{ $data->late }}</td>
-                                <td>{{ $data->no_scan }}</td>
+                                {{-- <td>{{ $data->no_scan }}</td> --}}
+                                {{-- <td>{{ $data->no_scan_history }}</td> --}}
+                                <td>
+                                    @if ($data->no_scan_history == 'No Scan' && $data->no_scan == 'No Scan')
+                                        <h6><span class="badge bg-warning">No Scan</span></h6>
+                                    @elseif ($data->no_scan_history == 'No Scan' && $data->no_scan == null)
+                                        <h6><span class="badge bg-success"><i class="fa-solid fa-check"></i></span>
+                                        </h6>
+                                    @else
+                                        {{ $data->no_scan }}
+                                    @endif
+                                </td>
+
                                 <td>{{ $data->shift }}</td>
                                 <td>{{ $data->shift_malam }}</td>
                             </tr>
@@ -216,89 +225,10 @@
         </div>
     </div>
     <!-- Modal Edit -->
-    <div wire:ignore.self class="modal fade" id="editModal" tabindex="-1" role="dialog"
-        aria-labelledby="editModalLabel" aria-hidden="true">
-        {{-- <div class="modal-dialog modal-dialog-centered " role="document"> --}}
-        <div class="modal-dialog " role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div>
-                        <h5 class="modal-title" id="editModalLabel">Edit Jam Kerja</h5>
-                        <h6>{{ $show_name }} ({{ $show_id }})</h6>
-                    </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                        wire:click="closeModal">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
+    {{-- edit-presensi-modal --}}
+    @include('modals.edit-presensi-modal')
+    @include('modals.presensi-detail')
 
-                <div class="modal-body">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label>First In</label>
-                            <input type="time" class="form-control" wire:model.defer="first_in" step="60"
-                                placeholder="--:--" onfocus="this.showPicker()"
-                                onkeydown="if(event.key==='Delete'||event.key==='Backspace'){ this.value=''; @this.set('first_in', null) }">
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label>First Out</label>
-                            <input type="time" class="form-control" wire:model.defer="first_out" step="60"
-                                placeholder="--:--" onfocus="this.showPicker()"
-                                onkeydown="if(event.key==='Delete'||event.key==='Backspace'){ this.value=''; @this.set('first_out', null) }">
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label>Second In</label>
-                            <input type="time" class="form-control" wire:model.defer="second_in" step="60"
-                                placeholder="--:--" onfocus="this.showPicker()"
-                                onkeydown="if(event.key==='Delete'||event.key==='Backspace'){ this.value=''; @this.set('second_in', null) }">
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label>Second Out</label>
-                            <input type="time" class="form-control" wire:model.defer="second_out" step="60"
-                                placeholder="--:--" onfocus="this.showPicker()"
-                                onkeydown="if(event.key==='Delete'||event.key==='Backspace'){ this.value=''; @this.set('second_out', null) }">
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label>Overtime In</label>
-                            <input type="time" class="form-control" wire:model.defer="overtime_in" step="60"
-                                placeholder="--:--" onfocus="this.showPicker()"
-                                onkeydown="if(event.key==='Delete'||event.key==='Backspace'){ this.value=''; @this.set('overtime_in', null) }">
-                        </div>
-
-                        <div class="form-group col-md-6">
-                            <label>Overtime Out</label>
-                            <input type="time" class="form-control" wire:model.defer="overtime_out"
-                                step="60" placeholder="--:--" onfocus="this.showPicker()"
-                                onkeydown="if(event.key==='Delete'||event.key==='Backspace'){ this.value=''; @this.set('overtime_out', null) }">
-                        </div>
-                    </div>
-
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" wire:click="closeModal">Tutup</button>
-                    <button type="button" class="btn btn-success" wire:click="update">Simpan</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <script>
-        window.addEventListener('show-edit-modal', () => {
-            $('#editModal').modal('show');
-        });
-
-        window.addEventListener('hide-edit-modal', () => {
-            $('#editModal').modal('hide');
-        });
-    </script>
     <script>
         document.addEventListener('keydown', function(event) {
             // Panah kiri
@@ -312,7 +242,4 @@
             }
         });
     </script>
-
-    @include('modals.presensi')
-
 </div>
