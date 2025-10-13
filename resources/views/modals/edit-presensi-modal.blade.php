@@ -61,14 +61,15 @@
                     </div>
                 </div>
                 {{-- @if (auth()->user()->role > 5) --}}
-                <div class="form-check mt-3">
-                    <input class="form-check-input" type="checkbox" value="1" id="checkChecked"
-                        wire:model='is_delete'>
-                    <label class="form-check-label" for="checkChecked">
-                        Delete No Scan History
-                    </label>
-                </div>
-                {{-- @endif --}}
+                @if ($delete_no_scan_history)
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" value="1" id="checkChecked"
+                            wire:model='is_delete'>
+                        <label class="form-check-label" for="checkChecked">
+                            Delete No Scan History
+                        </label>
+                    </div>
+                @endif
 
 
 
