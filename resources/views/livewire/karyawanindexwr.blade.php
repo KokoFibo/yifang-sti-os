@@ -182,16 +182,17 @@
                                         <button wire:loading.remove wire:click="excel"
                                             class="btn btn-success col-12">Excel</button>
                                     </th>
-
-                                    <th style="width: 150px; border-style: none;">
-                                        <a href="/template-gaji-form"> <button wire:loading.remove
-                                                class="btn btn-success col-12">Excel Template Department</button></a>
-                                    </th>
-                                    <th style="width: 150px; border-style: none;">
-                                        <a href="/template-gaji-form-placement"> <button wire:loading.remove
-                                                class="btn btn-success col-12">Excel Template Directorate</button></a>
-                                    </th>
-                                    @if (auth()->user()->role >= 6 || auth()->user()->username == 1146)
+                                    @if (auth()->user()->role >= 6)
+                                        <th style="width: 150px; border-style: none;">
+                                            <a href="/template-gaji-form"> <button wire:loading.remove
+                                                    class="btn btn-success col-12">Excel Template
+                                                    Department</button></a>
+                                        </th>
+                                        <th style="width: 150px; border-style: none;">
+                                            <a href="/template-gaji-form-placement"> <button wire:loading.remove
+                                                    class="btn btn-success col-12">Excel Template
+                                                    Directorate</button></a>
+                                        </th>
                                         <th>
                                             <a href="/bulk-upload-salary-adjust">
                                                 <button
