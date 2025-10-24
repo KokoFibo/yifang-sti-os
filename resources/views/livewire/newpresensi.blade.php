@@ -109,6 +109,7 @@
                                     'user_id' => '',
                                     'user_id' => 'User ID',
                                     'nama' => 'Nama',
+                                    'date' => 'Tanggal',
                                     'metode_penggajian' => 'Metode Penggajian',
                                     'placement_id' => 'Directorate',
                                     'jabatan_id' => 'Jabatan',
@@ -173,6 +174,8 @@
                                 </td>
                                 <td>{{ $data->user_id }}</td>
                                 <td>{{ $data->nama }}</td>
+                                <td>{{ \Carbon\Carbon::parse($data->date)->format('d M') }}</td>
+
                                 <td>{{ $data->metode_penggajian }}</td>
                                 <td>{{ nama_placement($data->placement_id ?? '-') }}</td>
                                 <td>{{ nama_jabatan($data->jabatan_id ?? '-') }}</td>
