@@ -730,7 +730,7 @@ function build_payroll_os($month, $year)
 
     foreach ($data as $d) {
         $lama_bekerja = lama_bekerja($d->tanggal_bergabung, $d->tanggal_resigned);
-        if ($lama_bekerja <= 90) {
+        if ($lama_bekerja < 90) {
             $data_payrolls = Payroll::where('id_karyawan', $d->id_karyawan)
                 ->whereMonth('date', $month)
                 ->whereYear('date', $year)
