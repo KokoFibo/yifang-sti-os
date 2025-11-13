@@ -25,8 +25,13 @@
         <button wire:click='clear_payroll_rebuild' class="btn btn-primary">Clear Payroll Rebuild</button>
         <button wire:click='delete_failed_jobs' class="btn btn-primary">Delete Failed Job</button>
         <a href="/GantiPasswordDeveloper"><button class="btn btn-primary">Ganti Password Developer</button></a>
-        <a href="/harikhusus"><button class="btn btn-primary">Hari/tanggal khusus</button></a>
     </div>
+    <div class="d-flex mt-5 justify-content-evenly">
+        <a href="/harikhusus"><button class="btn btn-primary">Hari/tanggal khusus</button></a>
+        <a href="/cekperbulan"><button class="btn btn-primary">Cek Perbulan yang < 8jam</button></a>
+
+    </div>
+
     <div class="d-flex mt-5 justify-content-evenly">
         <button class='btn btn-danger' wire:confirm='Are you sure?' wire:click='delete_diatas_4jt'>Delete Karyawan Gaji
             diatas
