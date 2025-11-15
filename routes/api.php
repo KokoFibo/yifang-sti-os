@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\LarkController;
 use App\Http\Controllers\UserSyncController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\LaporanApiController;
 
 /*
@@ -35,3 +36,5 @@ Route::get('os-placement/{month}/{year}/{placement_id}', [LaporanApiController::
 Route::get('os-placement-name/{month}/{year}/{placement_name}', [LaporanApiController::class, 'osPlacementName']);
 
 Route::get('/users/export', [UserSyncController::class, 'export']);
+Route::get('/attendance/{user_id}/{month}/{year}', [AttendanceController::class, 'index']);
+Route::get('/latest-month-year/{user_id}', [AttendanceController::class, 'getLatestMonthYearByUser']);
