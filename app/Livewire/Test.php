@@ -64,6 +64,14 @@ class Test extends Component
 
   public function render()
   {
+
+    dd('aman');
+
+
+
+
+
+
     $payrolls = Payroll::whereYear('date', 2025)
       ->whereMonth('date', 9)
       ->get();
