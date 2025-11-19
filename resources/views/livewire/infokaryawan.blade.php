@@ -1,127 +1,242 @@
-<?php
+<div>
 
-namespace App\Livewire;
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
 
-use Livewire\Component;
-use App\Models\Karyawan;
-use App\Models\Applicantfile;
+        .content {
+            padding: 20px;
+        }
 
-use App\Models\Yfrekappresensi;
-use Illuminate\Support\Facades\DB;
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 
-class Infokaryawan extends Component
-{
-    // public function render()
-    // {
-    //     $total_karyawan_aktif = Karyawan::whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])->count();
-    //     $total_karyawan_hadir_hari_ini = Yfrekappresensi::where('date', today())->count();
+    <body>
 
-    //     $jumlahTanpaRekening = Karyawan::where('nomor_rekening', '')->whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])->count();
-    //     $dataTanpaRekening = Karyawan::where('nomor_rekening', '')->whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])->get();
-    //     $pkwt = Karyawan::where('status_karyawan', 'PKWT')->count();
-    //     $pkwtt = Karyawan::where('status_karyawan', 'PKWTT')->count();
-    //     $dirumahkan = Karyawan::where('status_karyawan', 'Dirumahkan')->count();
-    //     $resigned = Karyawan::where('status_karyawan', 'Resigned')->count();
-    //     $blacklist = Karyawan::where('status_karyawan', 'Blacklist')->count();
-    //     $data = Karyawan::whereNotNull('id_file_karyawan')->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan'])->get();
-    //     $karyawan_berdokumen = 0;
-    //     foreach ($data as $d) {
-    //         $applicanteFiles = Applicantfile::where('id_karyawan', $d->id_file_karyawan)->count();
-    //         if ($applicanteFiles > 0) $karyawan_berdokumen++;
-    //     }
-    //     return view('livewire.infokaryawan', [
-    //         'total_karyawan_aktif' => $total_karyawan_aktif,
-    //         'total_karyawan_hadir_hari_ini' => $total_karyawan_hadir_hari_ini,
-    //         'jumlahTanpaRekening' => $jumlahTanpaRekening,
-    //         'dataTanpaRekening' => $dataTanpaRekening,
-    //         'pkwt' => $pkwt,
-    //         'pkwtt' => $pkwtt,
-    //         'dirumahkan' => $dirumahkan,
-    //         'resigned' => $resigned,
-    //         'blacklist' => $blacklist,
-    //         'karyawan_berdokumen' => $karyawan_berdokumen,
 
-    //     ]);
-    // }
-    public function render()
-    {
-        $total_karyawan_aktif = Karyawan::whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])->count();
 
-        // $total_karyawan_hadir_hari_ini = Yfrekappresensi::whereDate('date', today())->count();
+        <!-- Main Content -->
+        <div class="content">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Informasi Karyawan</h2>
+                <a href="/karyawanindex"><button class="btn btn-primary">Exit</button></a>
+            </div>
 
-        $jumlahTanpaRekening = Karyawan::where('nomor_rekening', '')
-            ->whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])
-            ->count();
+            <!-- Cards -->
+            {{-- First row --}}
+            <div class="row g-4">
+                <!-- Card 0 -->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Total Karyawan Aktif</h5>
+                            <br>
+                            <br>
+                            <p class="display-4">{{ number_format($total_karyawan_aktif) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 1 -->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Karyawan PKWT</h5>
+                            <br>
+                            <br>
+                            <p class="display-4">{{ number_format($pkwt) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Karyawan PKWTT</h5>
+                            <br>
+                            <br>
+                            <p class="display-4">{{ number_format($pkwtt) }}</p>
+                        </div>
+                    </div>
+                </div>
 
-        $dataTanpaRekening = Karyawan::where('nomor_rekening', '')
-            ->whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])
-            ->get();
+                <!-- Card 3 -->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Karyawan Dirumahkan</h5>
+                            <br>
+                            <br>
+                            <p class="display-4">{{ number_format($dirumahkan) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Karyawan Resigned</h5>
+                            <br>
+                            <br>
+                            <p class="display-4">{{ number_format($resigned) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card 5 -->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Karyawan Blacklist</h5>
+                            <br>
+                            <br>
+                            <p class="display-4">{{ number_format($blacklist) }}</p>
+                        </div>
+                    </div>
+                </div>
 
-        $total_karyawan_perbulan = Karyawan::where('metode_penggajian', 'Perbulan')
-            ->whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])
-            ->count();
+            </div>
 
-        $total_karyawan_perjam = Karyawan::where('metode_penggajian', 'Perjam')
-            ->whereNotIn('status_karyawan', ['Resigned', 'Blacklist'])
-            ->count();
+            {{-- Second row --}}
+            <div class="row g-4">
+                <!-- Card 1 -->
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Tanpa No Rekening Bank</h5>
+                            @if ($jumlahTanpaRekening > 0)
+                                <p class="display-4 text-danger">{{ number_format($jumlahTanpaRekening) }}</p>
+                            @else
+                                <p class="display-4">{{ number_format($jumlahTanpaRekening) }}</p>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Belum upload dokumen</h5>
+                            <p class="display-4">{{ number_format($jumlah_karyawan_tanpa_dokumen) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Jumlah Karyawan Perbulan</h5>
+                            <p class="display-4">{{ number_format($total_karyawan_perbulan) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Jumlah Karyawan Perjam</h5>
+                            <p class="display-4">{{ number_format($total_karyawan_perjam) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Jumlah Karyawan Perbulan tanpa PTKP</h5>
+                            <p class="display-4">{{ number_format($karyawan_perbulan_tanpa_ptkp) }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Jumlah Karyawan tanpa Email</h5>
+                            <p class="display-4">{{ number_format($jumlah_karyawan_tanpa_email) }}</p>
+                        </div>
+                    </div>
+                </div>
 
-        // hitung semua status dalam 1 query
-        $statusCount = Karyawan::select('status_karyawan', DB::raw('COUNT(*) as total'))
-            ->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned', 'Blacklist'])
-            ->groupBy('status_karyawan')
-            ->pluck('total', 'status_karyawan');
+            </div>
 
-        // hitung jumlah karyawan yg punya ApplicantFile dalam 1 query bukan looping
-        $karyawan_berdokumen = Applicantfile::distinct('id_karyawan')->count('id_karyawan');
+            <!-- Table Karyawan tanpa nomor rekening bank -->
+            <div class="row g-4">
 
-        // 1. Ambil semua karyawan aktif yang seharusnya punya dokumen
-        $karyawanYgHarusPunyaDokumen = Karyawan::whereNotNull('id_file_karyawan')
-            ->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan'])
-            ->pluck('id_file_karyawan')
-            ->toArray();
+                <div class="mt-5">
+                    <h4>Karyawan tanpa nomor rekening bank</h4>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>ID Karyawan</th>
+                                <th>Nama</th>
+                                <th>Jabatan</th>
+                                <th>Status</th>
+                                <th>Bank</th>
+                                <th>No Rekening</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($dataTanpaRekening as $key => $dtr)
+                                <tr>
+                                    <td>{{ $key }}</td>
+                                    <td>{{ $dtr->id_karyawan }}</td>
+                                    <td>{{ $dtr->nama }}</td>
+                                    <td>{{ nama_jabatan($dtr->jabatan_id) }}</td>
+                                    <td>{{ $dtr->status_karyawan }}</td>
+                                    <td>{{ $dtr->nama_bank }}</td>
 
-        // 2. Ambil semua id_karyawan yang sudah punya dokumen
-        $karyawanYgSudahPunyaDokumen = Applicantfile::distinct('id_karyawan')->pluck('id_karyawan')->toArray();
+                                    <td>
+                                        <button class="btn btn-sm btn-danger">Kosong</button>
+                                    </td>
+                                </tr>
+                            @endforeach
 
-        // 3. Cari yang belum punya dokumen
-        $karyawan_tanpa_dokumen = array_diff($karyawanYgHarusPunyaDokumen, $karyawanYgSudahPunyaDokumen);
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- Table Karyawan tanpa Email -->
+            <div class="row g-4">
 
-        // 4. Hitung jumlahnya
-        $jumlah_karyawan_tanpa_dokumen = count($karyawan_tanpa_dokumen);
+                <div class="mt-5">
+                    <h4>Karyawan tanpa Email</h4>
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>#</th>
+                                <th>ID Karyawan</th>
+                                <th>Nama</th>
+                                <th>Jabatan</th>
+                                <th>Status</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($karyawan_tanpa_email as $key => $dtr)
+                                <tr>
+                                    <td>{{ $key }}</td>
+                                    <td>{{ $dtr->id_karyawan }}</td>
+                                    <td>{{ $dtr->nama }}</td>
+                                    <td>{{ nama_jabatan($dtr->jabatan_id) }}</td>
+                                    <td>{{ $dtr->status_karyawan }}</td>
+                                    <td>{{ $dtr->email }}</td>
 
-        $karyawan_perbulan_tanpa_ptkp = Karyawan::whereNotNull('id_file_karyawan')
-            ->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan'])
-            ->where('ptkp', null)
-            ->count();
+                                    <td>
+                                        <button class="btn btn-sm btn-danger">Kosong</button>
+                                    </td>
+                                </tr>
+                            @endforeach
 
-        $karyawan_tanpa_email = Karyawan::whereNotNull('id_file_karyawan')
-            ->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan'])
-            ->where(function ($q) {
-                $q->whereNull('email')->orWhere('email', '')->orWhere('email', ' ');
-            })
-            ->get();
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-        $jumlah_karyawan_tanpa_email = $karyawan_tanpa_email->count();
+            <!-- Script Bootstrap -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
 
-        return view('livewire.infokaryawan', [
-            'total_karyawan_aktif' => $total_karyawan_aktif,
-            // 'total_karyawan_hadir_hari_ini' => $total_karyawan_hadir_hari_ini,
-            'jumlahTanpaRekening' => $jumlahTanpaRekening,
-            'dataTanpaRekening' => $dataTanpaRekening,
+    </html>
 
-            'pkwt' => $statusCount['PKWT'] ?? 0,
-            'pkwtt' => $statusCount['PKWTT'] ?? 0,
-            'dirumahkan' => $statusCount['Dirumahkan'] ?? 0,
-            'resigned' => $statusCount['Resigned'] ?? 0,
-            'blacklist' => $statusCount['Blacklist'] ?? 0,
-
-            'karyawan_berdokumen' => $karyawan_berdokumen,
-            'total_karyawan_perjam' => $total_karyawan_perjam,
-            'total_karyawan_perbulan' => $total_karyawan_perbulan,
-            'jumlah_karyawan_tanpa_dokumen' => $jumlah_karyawan_tanpa_dokumen,
-            'karyawan_perbulan_tanpa_ptkp' => $karyawan_perbulan_tanpa_ptkp,
-            'karyawan_tanpa_email' => $karyawan_tanpa_email,
-            'jumlah_karyawan_tanpa_email' => $jumlah_karyawan_tanpa_email,
-        ]);
-    }
-}
+</div>
