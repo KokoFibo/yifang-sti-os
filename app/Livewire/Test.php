@@ -65,7 +65,20 @@ class Test extends Component
   public function render()
   {
 
-    dd('aman');
+    $month = 11;
+    $year = 2025;
+
+    $data = Karyawan::where('status_karyawan', 'Resigned')
+      ->whereMonth('tanggal_resigned', $month)
+      ->whereYear('tanggal_resigned', $year)
+      ->whereRaw('DATEDIFF(tanggal_resigned, tanggal_bergabung) < 90')
+      ->whereNotNull('tanggal_resigned')
+      ->whereNotNull('tanggal_bergabung')
+
+      ->get();
+
+    dd($data);
+
 
 
 
