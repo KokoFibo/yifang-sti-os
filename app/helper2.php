@@ -311,10 +311,10 @@ function build_payroll_os($month, $year)
         //   hitung BPJS
 
         if ($data->karyawan->potongan_JP == 1) {
-            if ($data->karyawan->gaji_bpjs <= 10042300) {
+            if ($data->karyawan->gaji_bpjs <= 10547400) {
                 $jp = $data->karyawan->gaji_bpjs * 0.01;
             } else {
-                $jp = 10042300 * 0.01;
+                $jp = 10547400 * 0.01;
             }
         } else {
             $jp = 0;
@@ -551,9 +551,9 @@ function build_payroll_os($month, $year)
         }
 
         if (
-            $data->karyawan->gaji_bpjs >= 10042300
+            $data->karyawan->gaji_bpjs >= 10547400
         ) {
-            $gaji_jp_max = 10042300;
+            $gaji_jp_max = 10547400;
         } else {
             $gaji_jp_max = $data->karyawan->gaji_bpjs;
         }
@@ -564,13 +564,9 @@ function build_payroll_os($month, $year)
         } else {
             $kesehatan_company = 0;
         }
-
+        // untuk inndustri tekstil STI rate nya 0.89%
         if ($data->karyawan->potongan_JKK) {
-            $jkk_company = ($data->karyawan->gaji_bpjs * 0.24) / 100;
-            // rubah JKK company STI = 101
-            if ($data->karyawan->company_id == 101) {
-                $jkk_company = ($data->karyawan->gaji_bpjs * 0.89) / 100;
-            }
+            $jkk_company = ($data->karyawan->gaji_bpjs * 0.89) / 100;
         } else {
             $jkk_company = 0;
         }
@@ -583,20 +579,16 @@ function build_payroll_os($month, $year)
 
         // ====================
         $total_bpjs = $data->karyawan->gaji_bpjs +
-            // $data->karyawan->ptkp +
-
             $jkk_company +
             $jkm_company +
             $kesehatan_company +
             $total_gaji_lembur +
             $gaji_libur +
-
             $tambahan_shift_malam;
 
         if ($data->karyawan->metode_penggajian == '') {
             dd('metode penggajian belum diisi', $data->karyawan->id_karyawan);
         }
-
 
         Payroll::create([
             'jp' => $jp,
@@ -723,25 +715,20 @@ function build_payroll_os($month, $year)
     // ok 4
     // perhitungan untuk karyawan yg resign sebelum 3 bulan
 
-    $data = Karyawan::where('tanggal_resigned', '!=', null)
+    $data = Karyawan::where('status_karyawan', 'Resigned')
         ->whereMonth('tanggal_resigned', $month)
         ->whereYear('tanggal_resigned', $year)
         ->get();
-
     foreach ($data as $d) {
         $lama_bekerja = lama_bekerja($d->tanggal_bergabung, $d->tanggal_resigned);
+
         if ($lama_bekerja < 90) {
             $data_payrolls = Payroll::where('id_karyawan', $d->id_karyawan)
                 ->whereMonth('date', $month)
                 ->whereYear('date', $year)
                 ->first();
 
-            // try {
-            //     $data_payroll = Payroll::find($data_payrolls->id);
-            // } catch (\Exception $e) {
-            //     dd($e->getMessage(), $d->id_karyawan, $lama_bekerja);
-            //     return $e->getMessage();
-            // }
+
 
             if ($data_payrolls != null) {
                 $data_payroll = Payroll::find($data_payrolls->id);
@@ -847,7 +834,7 @@ function build_payroll_os($month, $year)
 
 
         if ($data_karyawan->potongan_JKK) {
-            $jkk_company = ($data_karyawan->gaji_bpjs * 0.24) / 100;
+            $jkk_company = ($data_karyawan->gaji_bpjs * 0.89) / 100;
         } else {
             $jkk_company = 0;
         }
@@ -884,6 +871,7 @@ function build_payroll_os($month, $year)
             0,
             $data_karyawan->company_id
         );
+
         // $pph21 = hitung_pph21(
         //     $data_karyawan->gaji_bpjs,
         //     // $gaji_bpjs_adjust,
@@ -904,9 +892,27 @@ function build_payroll_os($month, $year)
 
         $total_tax = $gaji_bpjs_adjust + $jkk_company + $jkm_company + $kesehatan_company;
 
+        $total_bpjs = $data_karyawan->gaji_bpjs +
+            $jkk_company +
+            $jkm_company +
+            $kesehatan_company +
+            $data_karyawan->total_gaji_lembur +
+            $data_karyawan->gaji_libur +
+            $data_karyawan->tambahan_shift_malam;
 
 
-
+        // taxtka
+        // if ($data_karyawan->id_karyawan == 8234) dd(
+        //     $data_karyawan->id_karyawan,
+        //     $data_karyawan->gaji_bpjs,
+        //     $jkk_company,
+        //     $jkm_company,
+        //     $kesehatan_company,
+        //     $data_karyawan->total_gaji_lembur,
+        //     $data_karyawan->gaji_libur,
+        //     $data_karyawan->tambahan_shift_malam,
+        //     $total_bpjs
+        // );
 
         $is_exist = Payroll::where('id_karyawan', $id)->whereMonth('date', $month)
             ->whereYear('date', $year)->first();
@@ -996,7 +1002,8 @@ function build_payroll_os($month, $year)
             $data->hari_kerja = $total_n_hari_kerja - $jumlah_libur_nasional;
             $data->jam_kerja = 0;
             $data->jam_lembur = 0;
-            $data->total_bpjs = $total_tax;
+            // $data->total_bpjs = $total_tax;
+            $data->total_bpjs = $total_bpjs;
             // dd($total_tax, $data_karyawan->id_karyawan);
 
 
