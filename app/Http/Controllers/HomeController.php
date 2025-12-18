@@ -151,11 +151,6 @@ class HomeController extends Controller
                 // $karyawan_blacklist_mtd =  Karyawan::whereBetween('tanggal_blacklist', [Carbon::now()->startOfMonth(), Carbon::now()])->count();
                 // $karyawan_aktif_mtd = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan'])->count();
 
-                $agamas = Karyawan::whereNotIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan'])
-                    ->select('agama', DB::raw('COUNT(*) as total'))
-                    ->groupBy('agama')
-                    ->pluck('total', 'agama');
-
                 return view('dashboard', compact([
                     'karyawan_baru_mtd',
                     'karyawan_resigned_mtd',
@@ -168,8 +163,7 @@ class HomeController extends Controller
                     'belum_isi_kontak_darurat',
                     'jumlah_karyawan_baru_minggu_lalu',
                     'jumlah_karyawan_resign_minggu_lalu',
-                    'jumlah_karyawan_blacklist_minggu_lalu',
-                    'agamas'
+                    'jumlah_karyawan_blacklist_minggu_lalu'
 
                 ]));
             } else {
