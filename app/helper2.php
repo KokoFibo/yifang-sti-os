@@ -320,6 +320,8 @@ function build_payroll_os($month, $year)
             $jp = 0;
         }
 
+
+
         if ($data->karyawan->potongan_JHT == 1) {
             $jht = $data->karyawan->gaji_bpjs * 0.02;
         } else {
@@ -411,40 +413,6 @@ function build_payroll_os($month, $year)
             $manfaat_libur = $libur->count();
             $cx++;
         }
-
-        // if ($data->karyawan->id_karyawan == 4753) dd('$manfaat_libur: ', $manfaat_libur);
-        // }
-
-        // $status_resign = ($data->karyawan->status_karyawan == 'Resigned') && (check_resigned_validity($month, $year, $data->karyawan->tanggal_resigned));
-
-
-        // if ($data->karyawan->status_karyawan == 'Resigned' && check_resigned_validity($month, $year, $data->karyawan->tanggal_resigned) && $data->karyawan->metode_penggajian == 'Perbulan' && $manfaat_libur > 0) {
-        //     $manfaat_libur = manfaat_libur_resigned($month, $year, $libur, $data->user_id, $data->karyawan->tanggal_resigned);
-        // }
-
-
-        // if ($data->karyawan_id == '1026') {
-        //     dd($manfaat_libur);
-        // }
-
-        //ggg
-
-        // $total_n_hari_kerja = getTotalWorkingDays($year, $month);
-        // $jumlah_libur_nasional = jumlah_libur_nasional($month, $year);
-        // $max_hari_kerja = $total_n_hari_kerja - $jumlah_libur_nasional;
-        // $gaji_potongan = $data->karyawan->gaji_pokok / 26;
-        // $selisih_manfaat_libur = $jumlah_libur_nasional - $manfaat_libur;
-        // $selisih_hari_kerja = $max_hari_kerja - $data->total_hari_kerja;
-        // if ($selisih_hari_kerja < 0) $selisih_hari_kerja = 0;
-        // if ($selisih_manfaat_libur < 0) $selisih_manfaat_libur = 0;
-
-        // $gaji_karyawan_bulanan = $data->karyawan->gaji_pokok - ($gaji_potongan * ($selisih_manfaat_libur + $selisih_hari_kerja));
-        // if ($data->user_id == 58) dd($selisih_manfaat_libur, $selisih_hari_kerja, $max_hari_kerja, $total_n_hari_kerja, $jumlah_libur_nasional, $manfaat_libur);
-        // if ($data->total_hari_kerja >= 23) {
-        //     $gaji_karyawan_bulanan = $data->karyawan->gaji_pokok - ($gaji_potongan * $selisih_manfaat_libur);
-        // } else {
-        //     $gaji_karyawan_bulanan = $data->karyawan->gaji_pokok - ($gaji_potongan * ($selisih_manfaat_libur + $selisih_hari_kerja));
-        // }
 
 
         $gaji_karyawan_bulanan = ($data->karyawan->gaji_pokok / $total_n_hari_kerja) * ($data->total_hari_kerja + $manfaat_libur);
@@ -791,7 +759,6 @@ function build_payroll_os($month, $year)
 
         $data_id = Karyawan::where('id_karyawan', $id)->first();
         $data_karyawan = Karyawan::find($data_id->id);
-
         if ($data_karyawan->potongan_JP == 1) {
             if ($data_karyawan->gaji_bpjs <= 10547400) {
                 $jp = $data_karyawan->gaji_bpjs * 0.01;
@@ -801,6 +768,7 @@ function build_payroll_os($month, $year)
         } else {
             $jp = 0;
         }
+
 
         if ($data_karyawan->potongan_JHT == 1) {
             $jht = $data_karyawan->gaji_bpjs * 0.02;
