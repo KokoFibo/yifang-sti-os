@@ -140,17 +140,17 @@
                                 @foreach ($select_year as $sy)
                                     <option value="{{ $sy }}">{{ $sy }}</option>
                                 @endforeach
-                                <option value="2025">2025</option>
+                                {{-- <option value="2025">2025</option> --}}
                             </select>
                         </div>
                         <div>
                             <select class="form-select" wire:model.live="month">
                                 {{-- <option selected>Open this select menu</option>  --}}
-                                <option value="9">Sept 2025</option>
+                                {{-- <option value="9">Sept 2025</option> --}}
                                 @foreach ($select_month as $sm)
                                     <option value="{{ $sm }}">{{ monthName($sm) }}</option>
                                 @endforeach
-                                <option value="12">Desember 2025</option>
+                                {{-- <option value="12">Desember 2025</option> --}}
                             </select>
 
                         </div>
