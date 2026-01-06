@@ -47,11 +47,14 @@ class Newpresensi extends Component
     public $total_hari_kerja;
     public $total_jam_kerja;
     public $total_jam_lembur;
+    public $total_jam_kerja_libur;
+    public $total_jam_lembur_libur;
     public $total_keterlambatan;
     public $total_tambahan_shift_malam;
     public $month, $year, $user_id, $name;
     public $is_presensi_locked, $is_sunday, $is_hari_libur_nasional, $is_friday;
     public $show_name, $show_id, $delete_id;
+    public $total_hari_kerja_libur;
 
     public $placements, $jabatans, $bulan_terakhir;
 
@@ -141,12 +144,13 @@ class Newpresensi extends Component
         $total_hari_kerja = 0;
         $total_jam_kerja = 0;
         $total_jam_lembur = 0;
+        $total_jam_kerja_libur = 0;
+        $total_jam_lembur_libur = 0;
         $total_keterlambatan = 0;
         $langsungLembur = 0;
         $tambahan_shift_malam = 0;
         $total_tambahan_shift_malam = 0;
-
-
+        $total_hari_kerja_libur = 0;
 
         $data = Yfrekappresensi::with('karyawan')->where('user_id', $user_id)
             ->whereMonth('date', $this->month)
@@ -164,9 +168,12 @@ class Newpresensi extends Component
                     $tgl = tgl_lengkap($d->date);
 
                     $jam_kerja = $d->total_jam_kerja;
-                    $jam_kerja = $d->total_jam_kerja;
-                    $terlambat = $d->late;
                     $jam_lembur = $d->total_jam_lembur;
+                    $jam_kerja_libur = $d->total_jam_kerja_libur;
+                    $jam_lembur_libur = $d->total_jam_lembur_libur;
+                    $hari_kerja_libur = $d->total_hari_kerja_libur;
+                    $terlambat = $d->late;
+
                     //    $tambahan_shift_malam = $d->date
 
                     $table_warning = false;
@@ -224,28 +231,37 @@ class Newpresensi extends Component
                         'jam_kerja' => $jam_kerja,
                         'terlambat' => $terlambat,
                         'jam_lembur' => $jam_lembur,
+                        'jam_kerja_libur' => $jam_kerja_libur,
+                        'jam_lembur_libur' => $jam_lembur_libur,
                         'tambahan_shift_malam' => $tambahan_shift_malam,
                         'table_warning' => $table_warning,
+                        'hari_kerja_libur' => $hari_kerja_libur,
 
                     ]);
 
                     $total_hari_kerja++;
 
-                    if ((is_sunday($d->date) || is_libur_nasional($d->date)) && trim($d->karyawan->metode_penggajian) == 'Perbulan') {
-                        $total_hari_kerja--;
-                    }
+                    // if ((is_sunday($d->date) || is_libur_nasional($d->date)) && trim($d->karyawan->metode_penggajian) == 'Perbulan') {
+                    //     $total_hari_kerja--;
+                    // }
 
                     $total_jam_kerja += $jam_kerja;
                     $total_jam_lembur += $jam_lembur;
+                    $total_jam_kerja_libur += $jam_kerja_libur;
+                    $total_jam_lembur_libur += $jam_lembur_libur;
                     $total_keterlambatan += $terlambat;
                     $total_tambahan_shift_malam += $tambahan_shift_malam;
+                    $total_hari_kerja_libur += $hari_kerja_libur;
                 }
             }
             $this->total_hari_kerja = $total_hari_kerja;
             $this->total_jam_kerja = $total_jam_kerja;
             $this->total_jam_lembur = $total_jam_lembur;
+            $this->total_jam_kerja_libur = $total_jam_kerja_libur;
+            $this->total_jam_lembur_libur = $total_jam_lembur_libur;
             $this->total_keterlambatan = $total_keterlambatan;
             $this->total_tambahan_shift_malam = $total_tambahan_shift_malam;
+            $this->total_hari_kerja_libur = $total_hari_kerja_libur;
         }
     }
 
@@ -286,7 +302,6 @@ class Newpresensi extends Component
 
     public function filterKosong()
     {
-
         $this->is_kosong = true;
         $this->resetPage();
     }
@@ -376,6 +391,12 @@ class Newpresensi extends Component
 
         $data = Yfrekappresensi::find($this->editId);
 
+
+        $is_hari_libur_nasional = is_libur_nasional($data->date);
+        $is_sunday = is_sunday($data->date);
+
+
+
         $data->first_in = $this->first_in;
         $data->first_out = $this->first_out;
         $data->second_in = $this->second_in;
@@ -438,8 +459,11 @@ class Newpresensi extends Component
         $data->total_hari_kerja = 0;
         $data->total_jam_kerja = 0;
         $data->total_jam_lembur = 0;
+        $data->total_hari_kerja_libur = 0;
+        $data->total_jam_kerja_libur = 0;
+        $data->total_jam_lembur_libur = 0;
 
-        if (isset($hasil['jam_kerja']) && $hasil['jam_kerja'] > 4) {
+        if (isset($hasil['jam_kerja']) && $hasil['jam_kerja'] >= 1) {
             $data->total_hari_kerja = 1;
         }
 
@@ -459,7 +483,7 @@ class Newpresensi extends Component
                     $data->shift_malam = 1;
                 }
             } else if (is_sunday($data->date) || is_libur_nasional($data->date)) {
-                if ($data->total_jam_kerja > 0) {
+                if ($data->total_jam_kerja >= 8) {
                     // $jam_lembur = $jam_lembur + 2;
                     $data->shift_malam = 1;
                 }
@@ -496,6 +520,24 @@ class Newpresensi extends Component
                 $berhasil = 2;
             }
         }
+
+        // if ($dataKaryawan->metode_penggajian == "Perbulan") {
+        //     if ($data->total_jam_kerja > 0) {
+        //         $data->total_hari_kerja = 1;
+        //     }
+        // }
+
+        if ($is_hari_libur_nasional || $is_sunday) {
+            $data->total_hari_kerja_libur = 0;
+            $data->total_hari_kerja = 0;
+            $data->total_jam_kerja_libur = $data->total_jam_kerja * 2;
+            $data->total_jam_lembur_libur = $data->total_jam_lembur * 2;
+            $data->total_jam_kerja = 0;
+            $data->total_jam_lembur = 0;
+        }
+
+
+
         $data->save();
         $this->delete_no_scan_history = false;
         $this->is_delete = false;
@@ -654,7 +696,8 @@ class Newpresensi extends Component
 
     public function render()
     {
-
+        $bulan = date('m', strtotime($this->tanggal));
+        $tahun = date('Y', strtotime($this->tanggal));
         if (! $this->is_kosong) {
             $query = Yfrekappresensi::join('karyawans', 'karyawans.id_karyawan', '=', 'yfrekappresensis.user_id')
                 ->select(
@@ -663,16 +706,31 @@ class Newpresensi extends Component
                     'karyawans.metode_penggajian',
                     'karyawans.placement_id',
                     'karyawans.jabatan_id'
-                )
-                ->where('yfrekappresensis.date', $this->tanggal);
+                );
+
+            if (empty($this->search)) {
+                $query->where('yfrekappresensis.date', $this->tanggal);
+            } else {
+                $query->whereMonth('yfrekappresensis.date', date('m', strtotime($this->tanggal)))
+                    ->whereYear('yfrekappresensis.date', date('Y', strtotime($this->tanggal)));
+            }
+            // ->whereMonth('yfrekappresensis.date', $this->tanggal)
+            // ->whereYear('yfrekappresensis.date', $this->tanggal);
 
 
+
+            // ->where('yfrekappresensis.date', $this->tanggal);
 
             // 🔍 Filter search
             if (!empty($this->search)) {
                 $query->where(function ($q) {
                     $q->where('karyawans.nama', 'like', '%' . $this->search . '%')
                         ->orWhere('yfrekappresensis.user_id', 'like', '%' . $this->search . '%');
+                    // ->whereMonth(
+                    //     'yfrekappresensis.date',
+                    //     date('m', strtotime($this->tanggal))
+                    // )
+                    // ->whereYear('yfrekappresensis.date', date('Y', strtotime($this->tanggal)));
                 });
             }
 
@@ -707,7 +765,7 @@ class Newpresensi extends Component
                 ->whereNull('yfrekappresensis.overtime_in')
                 ->whereNull('yfrekappresensis.overtime_out')
                 ->paginate($this->rowsPerPage);
-            $this->is_kosong = false;
+            // $this->is_kosong = false;
         }
         if ($this->is_no_scan) {
             $datas = Yfrekappresensi::join('karyawans', 'karyawans.id_karyawan', '=', 'yfrekappresensis.user_id')
@@ -722,30 +780,10 @@ class Newpresensi extends Component
                 ->whereYear('yfrekappresensis.date', Carbon::parse($this->tanggal)->year)
                 ->where('no_scan', 'No Scan')
                 ->paginate($this->rowsPerPage);
-            $this->is_no_scan = false;
+            // $this->is_no_scan = false;
         }
-
-
-
-
-
-
-
-
-
-        // Dropdown placement
-        // $placements = Placement::select('id', 'placement_name')
-        //     ->orderBy('placement_name')
-        //     ->get();
-
-
-
-
-
         $this->is_presensi_locked = $this->check_presensi_locked();
-
         $this->checkData();
-
         return view('livewire.newpresensi', [
             'datas' => $datas,
 

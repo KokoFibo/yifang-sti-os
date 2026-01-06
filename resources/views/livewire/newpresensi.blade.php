@@ -102,51 +102,254 @@
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-hover table-sm align-middle text-nowrap text-sm">
+
                     <thead class="table-light text-center">
                         <tr>
-                            @php
-                                $columns = [
-                                    'user_id' => '',
-                                    'user_id' => 'User ID',
-                                    'nama' => 'Nama',
-                                    'date' => 'Tanggal',
-                                    'metode_penggajian' => 'Metode Penggajian',
-                                    'placement_id' => 'Directorate',
-                                    'jabatan_id' => 'Jabatan',
-                                    'first_in' => 'First In',
-                                    'first_out' => 'First Out',
-                                    'second_in' => 'Second In',
-                                    'second_out' => 'Second Out',
-                                    'overtime_in' => 'Overtime In',
-                                    'overtime_out' => 'Overtime Out',
-                                    'total_jam_kerja' => 'Total Jam Kerja',
-                                    'total_hari_kerja' => 'Total Hari Kerja',
-                                    'total_jam_lembur' => 'Total Jam Lembur',
-                                    'total_jam_kerja_libur' => 'Total Jam Kerja Libur',
-                                    'late' => 'Late',
-                                    'no_scan' => 'No Scan',
-                                    'shift' => 'Shift',
-                                    'shift_malam' => 'Tambahan Shift Malam',
-                                ];
-                            @endphp
-                            <th>
-                            </th>
-                            @foreach ($columns as $field => $label)
-                                {{-- hanya tampilkan kolom total_jam_kerja_libur kalau role == 8 --}}
-                                @if ($field === 'total_jam_kerja_libur' && Auth::user()->role != 8)
-                                    @continue
-                                @endif
-                                <th wire:click="sortBy('{{ $field }}')" style="cursor:pointer;">
-                                    {{ $label }}
-                                    @if ($sortField === $field)
-                                        @if ($sortDirection === 'asc')
-                                            <i class="bi bi-arrow-up"></i>
-                                        @else
-                                            <i class="bi bi-arrow-down"></i>
-                                        @endif
+                            <th></th>
+
+                            <th wire:click="sortBy('user_id')" style="cursor:pointer;">
+                                User ID
+                                @if ($sortField === 'user_id')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
                                     @endif
-                                </th>
-                            @endforeach
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('nama')" style="cursor:pointer;">
+                                Nama
+                                @if ($sortField === 'nama')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('date')" style="cursor:pointer;">
+                                Tanggal
+                                @if ($sortField === 'date')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('metode_penggajian')" style="cursor:pointer;">
+                                Metode Penggajian
+                                @if ($sortField === 'metode_penggajian')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('placement_id')" style="cursor:pointer;">
+                                Directorate
+                                @if ($sortField === 'placement_id')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('jabatan_id')" style="cursor:pointer;">
+                                Jabatan
+                                @if ($sortField === 'jabatan_id')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('first_in')" style="cursor:pointer;">
+                                First In
+                                @if ($sortField === 'first_in')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('first_out')" style="cursor:pointer;">
+                                First Out
+                                @if ($sortField === 'first_out')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('second_in')" style="cursor:pointer;">
+                                Second In
+                                @if ($sortField === 'second_in')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('second_out')" style="cursor:pointer;">
+                                Second Out
+                                @if ($sortField === 'second_out')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('overtime_in')" style="cursor:pointer;">
+                                Overtime In
+                                @if ($sortField === 'overtime_in')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('overtime_out')" style="cursor:pointer;">
+                                Overtime Out
+                                @if ($sortField === 'overtime_out')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('total_hari_kerja')" style="cursor:pointer;">
+                                Total Hari Kerja
+                                @if ($sortField === 'total_hari_kerja')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('total_jam_kerja')" style="cursor:pointer;">
+                                Total Jam Kerja
+                                @if ($sortField === 'total_jam_kerja')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+
+
+                            <th wire:click="sortBy('total_jam_lembur')" style="cursor:pointer;">
+                                Total Jam Lembur
+                                @if ($sortField === 'total_jam_lembur')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('total_jam_kerja_libur')" style="cursor:pointer;">
+                                Total Jam Kerja Libur
+                                @if ($sortField === 'total_jam_kerja_libur')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('total_hari_kerja_libur')" style="cursor:pointer;">
+                                Total Hari Kerja Libur
+                                @if ($sortField === 'total_hari_kerja_libur')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('total_jam_lembur_libur')" style="cursor:pointer;">
+                                Total Jam Lembur Libur
+                                @if ($sortField === 'total_jam_lembur_libur')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('late')" style="cursor:pointer;">
+                                Late
+                                @if ($sortField === 'late')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('no_scan')" style="cursor:pointer;">
+                                No Scan
+                                @if ($sortField === 'no_scan')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('shift')" style="cursor:pointer;">
+                                Shift
+                                @if ($sortField === 'shift')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+
+                            <th wire:click="sortBy('shift_malam')" style="cursor:pointer;">
+                                Tambahan Shift Malam
+                                @if ($sortField === 'shift_malam')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
                         </tr>
                     </thead>
 
@@ -166,16 +369,17 @@
                                         data-bs-target="#update-form-modal"><i
                                             class="fa-solid fa-magnifying-glass fa-xs"></i></button>
 
-                                    @if (Auth::user()->role >= 6)
-                                        <button class="btn btn-danger btn-xs" wire:click="delete({{ $data->id }})"
+                                    @if (Auth::user()->role >= 7)
+                                        <button class="btn btn-danger btn-xs"
+                                            wire:click="delete({{ $data->id }})"
                                             wire:confirm.prompt="Yakin mau di delete?\n\nKetik DELETE untuk konfirmasi|DELETE"><i
                                                 class="fa-solid fa-trash-can confirm-delete fa-xs"></i></button>
                                     @endif
                                 </td>
                                 <td>{{ $data->user_id }}</td>
                                 <td>{{ $data->nama }}</td>
+                                {{-- <td>{{ $data->date }}</td> --}}
                                 <td>{{ \Carbon\Carbon::parse($data->date)->format('d M') }}</td>
-
                                 <td>{{ $data->metode_penggajian }}</td>
                                 <td>{{ nama_placement($data->placement_id ?? '-') }}</td>
                                 <td>{{ nama_jabatan($data->jabatan_id ?? '-') }}</td>
@@ -193,12 +397,14 @@
                                 <td>{{ $data->overtime_out ? \Carbon\Carbon::parse($data->overtime_out)->format('H:i') : '-' }}
                                 </td>
 
-                                <td>{{ $data->total_jam_kerja }}</td>
                                 <td>{{ $data->total_hari_kerja }}</td>
+                                <td>{{ $data->total_jam_kerja }}</td>
                                 <td>{{ $data->total_jam_lembur }}</td>
-                                @if (Auth::user()->role == 8)
-                                    <td>{{ $data->total_jam_kerja_libur }}</td>
-                                @endif
+                                {{-- @if (Auth::user()->role == 8) --}}
+                                <td>{{ $data->total_jam_kerja_libur }}</td>
+                                <td>{{ $data->total_hari_kerja_libur }}</td>
+                                <td>{{ $data->total_jam_lembur_libur }}</td>
+                                {{-- @endif --}}
                                 <td>{{ $data->late }}</td>
                                 {{-- <td>{{ $data->no_scan }}</td> --}}
                                 {{-- <td>{{ $data->no_scan_history }}</td> --}}

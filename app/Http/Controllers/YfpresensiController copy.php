@@ -826,7 +826,6 @@ class YfpresensiController extends Controller
             }
             if ($late > 0) $tambahan_shift_malam = 0;
 
-
             Yfrekappresensi::create([
                 'shift_malam' => $tambahan_shift_malam ?? 0,
                 'user_id' => $user_id,
