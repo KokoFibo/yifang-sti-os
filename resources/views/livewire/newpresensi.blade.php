@@ -369,7 +369,7 @@
                                         data-bs-target="#update-form-modal"><i
                                             class="fa-solid fa-magnifying-glass fa-xs"></i></button>
 
-                                    @if (Auth::user()->role >= 7)
+                                    @if (Auth::user()->role >= 6)
                                         <button class="btn btn-danger btn-xs"
                                             wire:click="delete({{ $data->id }})"
                                             wire:confirm.prompt="Yakin mau di delete?\n\nKetik DELETE untuk konfirmasi|DELETE"><i
