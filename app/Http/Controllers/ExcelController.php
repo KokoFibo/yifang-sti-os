@@ -130,7 +130,7 @@ class ExcelController extends Controller
         $karyawans = \App\Models\Karyawan::all();
 
 
-        $filtered = $karyawans->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan']);
+        $filtered = $karyawans->whereIn('status_karyawan', ['PKWT', 'PKWTT']);
 
         $grouped = $filtered->groupBy(function ($item) {
             return $item->placement_id . '-' . $item->department_id;
@@ -199,7 +199,7 @@ class ExcelController extends Controller
 
         $karyawans = \App\Models\Karyawan::all();
 
-        $filtered = $karyawans->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan']);
+        $filtered = $karyawans->whereIn('status_karyawan', ['PKWT', 'PKWTT']);
 
         $grouped = $filtered->groupBy('placement_id');
 
