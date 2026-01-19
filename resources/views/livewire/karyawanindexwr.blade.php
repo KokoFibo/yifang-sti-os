@@ -226,6 +226,12 @@
                                         <a href="/infokaryawan">
                                             <button class="btn btn-info">Informasi</button> </a>
                                     </th>
+                                    @if (auth()->user()->role >= 6)
+                                        <th style="width: 150px; border-style: none;">
+                                            <a href="/cek-kenaikan-gaji"><button class="btn btn-primary col-12">Cek
+                                                    Perkembangan Gaji</button></a>
+                                        </th>
+                                    @endif
 
                                     <th style=" border-style: none;">
                                         <div wire:loading wire:target='excel' class="spinner-border text-primary"

@@ -55,6 +55,7 @@ use App\Livewire\Editpresensiwr;
 use App\Livewire\UpdateTambahan;
 use App\Livewire\UserRegulation;
 use App\Http\Controllers\Testaja;
+use App\Livewire\Cekkenaikangaji;
 use App\Livewire\ChangeFieldData;
 use App\Livewire\Changeprofilewr;
 use App\Livewire\Karyawanindexwr;
@@ -262,6 +263,7 @@ Route::middleware(['auth'])->group(function () {
                     // Khusus untuk STI Senior admin boleh download
                     Route::get('/template-gaji-form', [ExcelController::class, 'template_gaji']);
                     Route::get('/template-gaji-form-placement', [ExcelController::class, 'template_gaji_placement']);
+                    Route::get('/cek-kenaikan-gaji', Cekkenaikangaji::class);
 
 
 
@@ -283,6 +285,7 @@ Route::middleware(['auth'])->group(function () {
                             return view('karyawan_excel_form_view', ['karyawans' => $karyawans, 'header_text' => 'ini header text nya']);
                         });
                         Route::get('/test-export', [ExcelController::class, 'testExport']);
+
 
 
 
