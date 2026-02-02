@@ -68,17 +68,12 @@ class Test extends Component
     $month = 11;
     $year = 2026;
 
+    dd('aman');
     $data = Yfrekappresensi::where('date', '2026-01-24')
       ->whereNot('late', null)
       ->get();
     // dd($data->count());
-    foreach ($data as $d) {
-      // dd($d);
-      $d->late = null;
-      $d->late_history = null;
-      $d->save();
-    }
-    dd('done');
+
 
 
 
