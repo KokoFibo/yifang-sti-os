@@ -66,18 +66,19 @@ class Test extends Component
   {
 
     $month = 11;
-    $year = 2025;
+    $year = 2026;
 
-    $data = Karyawan::where('status_karyawan', 'Resigned')
-      ->whereMonth('tanggal_resigned', $month)
-      ->whereYear('tanggal_resigned', $year)
-      ->whereRaw('DATEDIFF(tanggal_resigned, tanggal_bergabung) < 90')
-      ->whereNotNull('tanggal_resigned')
-      ->whereNotNull('tanggal_bergabung')
-
+    $data = Yfrekappresensi::where('date', '2026-01-24')
+      ->whereNot('late', null)
       ->get();
-
-    dd($data);
+    // dd($data->count());
+    foreach ($data as $d) {
+      // dd($d);
+      $d->late = null;
+      $d->late_history = null;
+      $d->save();
+    }
+    dd('done');
 
 
 
