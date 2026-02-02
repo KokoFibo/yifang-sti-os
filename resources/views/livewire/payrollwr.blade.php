@@ -151,6 +151,8 @@
                                     <option value="{{ $sm }}">{{ monthName($sm) }}</option>
                                 @endforeach
                                 {{-- <option value="12">Desember 2025</option> --}}
+                                <option value="1">Januari 2026</option>
+
                             </select>
 
                         </div>
