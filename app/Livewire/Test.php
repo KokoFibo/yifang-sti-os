@@ -72,13 +72,15 @@ class Test extends Component
       ->whereNot('late', null)
       ->get();
     // dd($data->count());
+    $cx = 0;
     foreach ($data as $d) {
       // dd($d);
       $d->late = null;
       $d->late_history = null;
       $d->save();
+      $cx++;
     }
-    dd('done');
+    dd('done', $cx);
 
 
 
