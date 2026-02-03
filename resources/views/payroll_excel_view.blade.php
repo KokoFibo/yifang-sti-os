@@ -111,6 +111,7 @@
                 <th style="text-align: center;">Nama Karyawan</th>
                 <th style="text-align: center;">Bank</th>
                 <th style="text-align: center;">No. Rekening</th>
+                <th style="text-align: center;">No NPWP</th>
                 <th style="text-align: center;">Jabatan</th>
                 <th style="text-align: center;">Company</th>
                 <th style="text-align: center;">Directorate</th>
@@ -250,6 +251,7 @@
                     <td> {{ $d->nama }}</td>
                     <td style="text-align: center"> {{ $d->nama_bank }}</td>
                     <td style="text-align: center"> {{ strval($d->nomor_rekening) }}</td>
+                    <td style="text-align: right"> {{ no_npwp($d->id_karyawan) }}</td>
                     <td style="text-align: center"> {{ nama_jabatan($d->jabatan_id) }}</td>
                     <td style="text-align: center"> {{ nama_company($d->company_id) }}</td>
                     <td style="text-align: center"> {{ nama_placement($d->placement_id) }}</td>

@@ -27,6 +27,17 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 
+function no_npwp($id)
+{
+    // Fetch the Karyawan data by ID
+    $karyawan = Karyawan::where('id_karyawan', $id)->select('no_npwp')->first();
+
+    if ($karyawan && $karyawan->no_npwp != "") {
+        return "'" . $karyawan->no_npwp;
+    }
+    return null;
+}
+
 function tgl_lengkap($tgl)
 {
     if (!$tgl) return null;
