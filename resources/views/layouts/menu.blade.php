@@ -171,10 +171,16 @@ with font-awesome or any other icon font library -->
                         <p>{{ __('User Mobile') }}</p>
                     </a>
                 </li>
-                <li class="nav-item {{ 'hitungthr' == request()->path() ? 'bg-secondary rounded' : '' }}">
+                {{-- <li class="nav-item {{ 'hitungthr' == request()->path() ? 'bg-secondary rounded' : '' }}">
                     <a href="/hitungthr" class="nav-link">
                         <i class="nav-icon fa-solid fa-mobile-screen-button"></i>
                         <p>{{ __('Hitung THR') }}</p>
+                    </a>
+                </li> --}}
+                <li class="nav-item {{ 'hitungthrlebaran' == request()->path() ? 'bg-secondary rounded' : '' }}">
+                    <a href="/hitungthrlebaran" class="nav-link">
+                        <i class="nav-icon fa-solid fa-mobile-screen-button"></i>
+                        <p>{{ __('Hitung THR Lebaran') }}</p>
                     </a>
                 </li>
                 <li class="nav-item {{ 'data-log' == request()->path() ? 'bg-secondary rounded' : '' }}">
