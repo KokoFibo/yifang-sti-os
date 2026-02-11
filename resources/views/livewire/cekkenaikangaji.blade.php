@@ -68,4 +68,6 @@
         @endif
 
     </div>
+    @livewire('LaporanPerubahanGaji')
+
 </div>

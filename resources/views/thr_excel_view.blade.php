@@ -39,7 +39,6 @@
                 <th style="text-align: center;">Gaji Pokok</th>
                 <th style="text-align: center;">THR</th>
                 <th style="text-align: center;">Penyesuaian</th>
-
             </tr>
         </thead>
         <tbody>
