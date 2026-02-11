@@ -67,6 +67,10 @@ class Test extends Component
 
     $month = 11;
     $year = 2026;
+    DB::table('payrolls')
+      ->where('date', '<', '2025-09-01')
+      ->delete();
+
 
     dd('aman');
     $data = Yfrekappresensi::where('date', '2026-01-24')
