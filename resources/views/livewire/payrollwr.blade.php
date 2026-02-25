@@ -372,9 +372,12 @@
                                 <th wire:click="sortColumnName('bonus1x')">{{ __('Bonus/U.Makan') }} <i
                                         class="fa-solid fa-sort"></i>
                                 </th>
-                                <th wire:click="sortColumnName('bonus1x')">{{ __('Bonus Karyawan') }} <i
+                                <th wire:click="sortColumnName('thr')">{{ __('THR') }} <i
                                         class="fa-solid fa-sort"></i>
                                 </th>
+                                {{-- <th wire:click="sortColumnName('bonus1x')">{{ __('Bonus Karyawan') }} <i
+                                        class="fa-solid fa-sort"></i>
+                                </th> --}}
                                 <th wire:click="sortColumnName('potongan1x')">{{ __('Potongan 1X') }}<i
                                         class="fa-solid fa-sort"></i>
                                 </th>
@@ -478,9 +481,12 @@
 
                                             @endphp
                                             <td class="text-end">
-                                                {{ number_format($total_bonus_dari_karyawan) }}
-                                                {{-- {{ $total_bonus_dari_karyawan ? number_format($total_bonus_dari_karyawan) : '' }} --}}
+                                                {{ $p->thr ? number_format($p->thr) : '' }}
                                             </td>
+
+                                            {{-- <td class="text-end">
+                                                {{ number_format($total_bonus_dari_karyawan) }}
+                                            </td> --}}
                                             <td class="text-end">
                                                 {{ $p->potongan1x ? number_format($p->potongan1x) : '' }}
                                             </td>
