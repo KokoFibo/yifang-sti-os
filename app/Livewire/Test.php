@@ -68,7 +68,6 @@ class Test extends Component
     $month = 11;
     $year = 2026;
 
-
     dd('aman');
     $data = Yfrekappresensi::where('date', '2026-01-24')
       ->whereNot('late', null)

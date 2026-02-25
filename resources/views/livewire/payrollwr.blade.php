@@ -151,7 +151,7 @@
                                     <option value="{{ $sm }}">{{ monthName($sm) }}</option>
                                 @endforeach
                                 {{-- <option value="12">Desember 2025</option> --}}
-                                <option value="1">Januari 2026</option>
+                                {{-- <option value="2">Februari 2026</option> --}}
 
                             </select>
 
@@ -195,7 +195,13 @@
                         class="btn btn-warning nightowl-daylight">{{ __('Detail Report') }}</button>
 
                     <button wire:click="export" class="btn btn-success nightowl-daylight">Excel</button>
-                    <button wire:click="buat_payroll('queue')"
+                    @if (auth()->user()->role == 8)
+                        <button wire:click="buat_payroll('queue')"
+                            {{ is_40_days($month, $year) == true || isDataUtamaLengkap() > 0 ? 'disabled' : '' }}
+                            class="btn btn-primary nightowl-daylight">{{ __('Rebuild Lama') }}</button>
+                    @endif
+
+                    <button wire:click="rebuildOptimized"
                         {{ is_40_days($month, $year) == true || isDataUtamaLengkap() > 0 ? 'disabled' : '' }}
                         class="btn btn-primary nightowl-daylight">{{ __('Rebuild') }}</button>
                 </div>

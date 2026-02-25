@@ -10,8 +10,9 @@ use App\Models\Liburnasional;
 
 
 
-function quickRebuildOptimized(int $month, int $year)
+function quickRebuildOptimized_lama(int $month, int $year)
 {
+    dd('quick');
     DB::transaction(function () use ($month, $year) {
 
         $payrollDate = Carbon::create($year, $month, 1)->format('Y-m-d');
@@ -465,7 +466,7 @@ WHEN p.total_noscan <= 3 THEN 0
                 'k.potongan_JKM',
                 'k.tunjangan_jabatan',
                 'k.tunjangan_bahasa',
-                // 'k.tunjangan_housing',
+                'k.tunjangan_housing',
                 'k.company_id'
             )
             ->get();
@@ -620,10 +621,9 @@ function hitungBPJSdanPPH21(
         : 0;
 
     if ($k->potongan_JKK) {
-        // $jkk_company = ($k->company_id == 106)
-        //     ? ($k->gaji_bpjs * 0.89) / 100
-        //     : ($k->gaji_bpjs * 0.24) / 100;
-        $jkk_company = ($k->gaji_bpjs * 0.89) / 100;
+        $jkk_company = ($k->company_id == 102)
+            ? ($k->gaji_bpjs * 0.89) / 100
+            : ($k->gaji_bpjs * 0.24) / 100;
     } else {
         $jkk_company = 0;
     }
@@ -644,7 +644,7 @@ function hitungBPJSdanPPH21(
                 $k->gaji_bpjs
                 + $k->tunjangan_jabatan
                 + $k->tunjangan_bahasa
-                // + $k->tunjangan_housing
+                + $k->tunjangan_housing
             ) * $gaji_bulan_ini / $k->gaji_pokok;
     } else {
         $gaji_bpjs_adjust = 0;
