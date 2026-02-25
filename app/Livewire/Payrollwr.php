@@ -355,7 +355,15 @@ class Payrollwr extends Component
     //     $this->dispatch(new BuildPayrollJob($this->month, $this->year));
     // }
 
-
+    public function rebuildOptimized()
+    {
+        quickRebuildOptimized($this->month, $this->year);
+        $this->dispatch(
+            'message',
+            type: 'success',
+            title: 'Data berhasil di build',
+        );
+    }
 
     public function buat_payroll($queue)
     {
