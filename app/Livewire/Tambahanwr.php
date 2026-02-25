@@ -56,7 +56,6 @@ class Tambahanwr extends Component
         $this->year = $temp->tanggal ? Carbon::parse($temp->tanggal)->year : now()->year;
         $this->month = $temp->tanggal ? Carbon::parse($temp->tanggal)->month : now()->month;
 
-
         $this->select_year = Bonuspotongan::select(DB::raw('YEAR(tanggal) as year'))
             ->distinct()
             ->pluck('year')
@@ -249,6 +248,7 @@ class Tambahanwr extends Component
             ->distinct()
             ->pluck('month')
             ->toArray();
+
         // $month_start = Carbon::now()
         //     ->startOfMonth()
         //     ->subMonth(1);

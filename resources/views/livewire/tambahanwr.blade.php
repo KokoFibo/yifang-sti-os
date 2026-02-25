@@ -5,8 +5,7 @@
             <div class="card-header bg-info nightowl-daylight">
                 <div class="d-flex justify-content-between">
 
-                    <label class=" col-form-label">{{ __('Bonus dan Potongan') }} {{ $month }}
-                        {{ $year }}</label>
+                    <label class=" col-form-label">{{ __('Bonus dan Potongan') }}</label>
                     {{-- spinner --}}
                     <div class="spinner-border text-warning" role="status" wire:loading wire:target="columnName">
                         <span class="visually-hidden">Loading...</span>
@@ -73,6 +72,10 @@
                                 <div class="mb-3">
                                     <label class="form-label">{{ __('Bonus Lain') }}</label>
                                     <input wire:model="bonus_lain" type="number" class="form-control">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">{{ __('THR') }}</label>
+                                    <input wire:model="thr" type="number" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -166,17 +169,25 @@
 
             <div class="card">
                 <div class="card-header">
-                    <div class="d-flex flex-column flex-md-row justify-content-between">
-                        <div class="input-group col-12 col-md-4">
-                            <button class="btn btn-primary" type="button"><i
-                                    class="fa-solid fa-magnifying-glass"></i></button>
-                            <input type="search" wire:model.live="search" class="form-control"
-                                placeholder="{{ __('Search') }} ...">
-                            <button wire:click='refresh'
-                                class="ml-3 btn btn-success d-none d-md-inline">Refresh</button>
+                    <div
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+                        <!-- Search & Refresh (desktop) -->
+                        <div class="flex-grow-1 col-12 col-md-4">
+                            <div class="input-group">
+                                <button class="btn btn-primary" type="button">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                                <input type="search" wire:model.live="search" class="form-control"
+                                    placeholder="{{ __('Search') }} ..." />
+                                <button wire:click="refresh" class="btn btn-success d-none d-md-inline ms-3"
+                                    type="button">
+                                    Refresh
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="d-flex gap-2 col-12 col-md-4 mt-2 mt-md-0">
+                        <!-- Sorting -->
+                        <div class="d-flex flex-grow-1 col-12 col-md-4 gap-2">
                             <select class="form-select" wire:model.live="columnName">
                                 <option value="user_id">Id Karyawan</option>
                                 <option value="id">Data Terakhir</option>
@@ -187,9 +198,8 @@
                             </select>
                         </div>
 
-
-
-                        <div class="d-flex gap-2 col-12 col-md-4 mt-2 mt-md-0">
+                        <!-- Year & Month -->
+                        <div class="d-flex flex-grow-1 col-12 col-md-4 gap-2 pe-3">
                             <select class="form-select" wire:model.live="year">
                                 @foreach ($select_year as $sy)
                                     <option value="{{ $sy }}">{{ $sy }}</option>
@@ -202,11 +212,12 @@
                             </select>
                         </div>
 
-
-
-                        <button wire:click='refresh'
-                            class="mt-2 mt-lg-0 ml-3 btn btn-success d-md-none">Refresh</button>
+                        <!-- Refresh (mobile only) -->
+                        <button wire:click="refresh" class="btn btn-success d-md-none w-100 mt-2 " type="button">
+                            Refresh
+                        </button>
                     </div>
+
 
                 </div>
                 <div class="col-12">
@@ -223,6 +234,7 @@
                                         <th wire:click="sortColumnName('tanggal')">{{ __('Tanggal') }}</th>
                                         <th wire:click="sortColumnName('uang_makan')">{{ __('Uang Makan') }}</th>
                                         <th wire:click="sortColumnName('bonus_lain')">{{ __('Bonus Lain') }}</th>
+                                        <th wire:click="sortColumnName('bonus_lain')">{{ __('THR') }}</th>
                                         <th wire:click="sortColumnName('baju_esd')">{{ __('Baju ESD') }}</th>
                                         <th wire:click="sortColumnName('gelas')">{{ __('Gelas') }}</th>
                                         <th wire:click="sortColumnName('sandal')">{{ __('Sandal') }}</th>
@@ -265,6 +277,7 @@
                                             <td>{{ format_tgl($d->tanggal) }}</td>
                                             <td class="text-end">{{ number_format($d->uang_makan) }}</td>
                                             <td class="text-end">{{ number_format($d->bonus_lain) }}</td>
+                                            <td class="text-end">{{ number_format($d->thr) }}</td>
                                             <td class="text-end">{{ number_format($d->baju_esd) }}</td>
                                             <td class="text-end">{{ number_format($d->gelas) }}</td>
                                             <td class="text-end">{{ number_format($d->sandal) }}</td>
