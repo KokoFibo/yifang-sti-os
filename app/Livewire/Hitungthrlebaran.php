@@ -82,6 +82,7 @@ class Hitungthrlebaran extends Component
 
         $query = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT'])
             ->where('tanggal_bergabung', '<', $this->cutoffMinus30)
+            ->orderBy('id_karyawan', 'asc')
             ->whereNotIn('etnis', ['China', 'Tionghoa']);
 
         $total = $query->get()->sum(function ($d) {

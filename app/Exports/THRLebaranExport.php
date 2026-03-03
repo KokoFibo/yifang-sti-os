@@ -69,6 +69,7 @@ class THRLebaranExport implements FromView,  ShouldAutoSize, WithColumnFormattin
         $data = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT'])
             ->where('tanggal_bergabung', '<', $cutoffMinus30)
             ->whereNotIn('etnis', ['China', 'Tionghoa'])
+            ->orderBy('id_karyawan', 'asc')
             ->get();
 
 
