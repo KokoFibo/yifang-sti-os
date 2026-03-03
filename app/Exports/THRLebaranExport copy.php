@@ -3,15 +3,14 @@
 namespace App\Exports;
 
 use App\Models\Karyawan;
-use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnFormatting;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class THRLebaranExport implements FromView,  ShouldAutoSize, WithColumnFormatting, WithStyles
 {
@@ -36,7 +35,26 @@ class THRLebaranExport implements FromView,  ShouldAutoSize, WithColumnFormattin
         $this->cutOffDate = $cutOffDate;
     }
 
+    public function hitungTHR($id, $tgl, $gaji, $tanggal_akhir)
+    {
+        $thr = 0;
 
+        $lama_kerja = selisihBulanBulat($tgl, $tanggal_akhir);
+        if ($lama_kerja < 12) {
+            return $gaji / 12 * $lama_kerja;
+        } else {
+            return $gaji;
+        }
+        // $selisih_hari = selisihHari($tgl, $tanggal_akhir);
+        // if ($selisih_hari > 365) {
+        //     $thr = $gaji;
+        // } else {
+        //     $karyawan = Karyawan::where('id_karyawan', $id)->first();
+        //     // $selisih_hari = Carbon::parse($tgl)->diffInDays(Carbon::parse($tanggal_akhir));
+        //     $thr =  $selisih_hari / 365 * $gaji;
+        // }
+        // return $thr;
+    }
 
     public function styles(Worksheet $sheet)
     {
@@ -60,18 +78,7 @@ class THRLebaranExport implements FromView,  ShouldAutoSize, WithColumnFormattin
         // $data = Karyawan::with(['placement', 'company', 'department', 'jabatan'])->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan'])->get();
         // $data = Karyawan::whereNotIn('etnis', ['China', 'Tionghoa'])
         //     ->whereIn('status_karyawan', ['PKWT', 'PKWTT'])->get();
-        // $this->cutOffDate = '2026-03-21';
-        $cutoffMinus30 = Carbon::parse($this->cutOffDate)->subDays(30);
-
-        // $query = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT'])
-        //     ->where('tanggal_bergabung', '<', $this->cutoffMinus30);
-
-        $data = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT'])
-            ->where('tanggal_bergabung', '<', $cutoffMinus30)
-            ->whereNotIn('etnis', ['China', 'Tionghoa'])
-            ->get();
-
-
+        $data = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT'])->get();
         $header_text = 'Perincian THR Lebaran STI';
         return view('thr_excel_view', [
             'cutOffDate' => $this->cutOffDate,
