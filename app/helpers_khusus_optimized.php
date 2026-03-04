@@ -150,7 +150,9 @@ END AS subtotal
             $gbi = $k->subtotal - $lemburan - $gl;
 
             if ($k->etnis == 'China') {
-                $gbl = $k->gaji_pokok;
+                $gbi = $k->gaji_pokok;
+                $k->total_hari_kerja = (float) $total_n_hari_kerja - $jumlah_libur_nasional;
+                $gl = 0;
             }
 
             $insert[] = [
