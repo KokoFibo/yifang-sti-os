@@ -149,10 +149,6 @@ END AS subtotal
 
             $gbi = $k->subtotal - $lemburan - $gl;
 
-
-
-
-
             if ($k->etnis == 'China') {
                 $gbl = $k->gaji_pokok;
             }
