@@ -25,6 +25,7 @@
                 <th style="text-align: center;">Department</th>
                 <th style="text-align: center;">Jabatan</th>
                 <th style="text-align: center;">Level Jabatan</th>
+                <th style="text-align: center;">Agama</th>
                 <th style="text-align: center;">Etnis</th>
                 <th style="text-align: center;">Status Karyawan</th>
                 <th style="text-align: center;">Tanggal Bergabung</th>
@@ -46,6 +47,7 @@
                     <td style="text-align: center"> {{ $d->department->nama_department }}</td>
                     <td style="text-align: center"> {{ $d->jabatan->nama_jabatan }}</td>
                     <td style="text-align: center"> {{ getGrade($d->level_jabatan) }}</td>
+                    <td style="text-align: center"> {{ $d->agama }}</td>
                     <td style="text-align: center"> {{ $d->etnis }}</td>
                     <td style="text-align: center"> {{ $d->status_karyawan }}</td>
                     <td style="text-align: center"> {{ $d->tanggal_bergabung }}</td>
