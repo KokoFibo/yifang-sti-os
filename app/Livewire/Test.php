@@ -69,9 +69,21 @@ class Test extends Component
     $year = 2026;
 
     dd('aman');
-    $data = Yfrekappresensi::where('date', '2026-01-24')
-      ->whereNot('late', null)
-      ->get();
+    $users = User::select(
+      'users.name',
+      'users.email',
+      'users.password',
+      'users.role',
+      'users.language',
+      'karyawans.id_karyawan as id_karyawan',
+      'companies.company_name'
+    )
+      ->join('karyawans', 'karyawans.id_karyawan', '=', 'users.username')
+      ->join('companies', 'companies.id', '=', 'karyawans.company_id')
+      ->whereNotIn('karyawans.status_karyawan', ['Resigned', 'Blacklist'])
+      ->count();
+
+    dd($users);
     // dd($data->count());
 
 
