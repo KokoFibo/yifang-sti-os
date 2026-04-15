@@ -1,42 +1,49 @@
-<div class="p-5">
-    <h2 class="text-xl font-bold mb-4">Data Payroll Berbeda ({{ count($beda) }})</h2>
+<div class="p-4">
+    <div class="bg-white rounded-2xl shadow p-4">
 
-    <table class="table-auto w-full border border-gray-300 text-sm">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="border px-2 py-1">#</th>
-                <th class="border px-2 py-1">ID Karyawan</th>
-                {{-- <th class="border px-2 py-1">Hari Kerja (Payroll)</th>
-                <th class="border px-2 py-1">Hari Kerja (Presensi)</th> --}}
-                <th class="border px-2 py-1">Jam Kerja (Payroll)</th>
-                <th class="border px-2 py-1">Jam Kerja (Presensi)</th>
-                <th class="border px-2 py-1">Jam Lembur (Payroll)</th>
-                <th class="border px-2 py-1">Jam Lembur (Presensi)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($beda as $i => $item)
-                <tr>
-                    <td class="border px-2 py-1 text-center">{{ $i + 1 }}</td>
-                    <td class="border px-2 py-1 text-center">{{ $item['id_karyawan'] }}</td>
-                    {{-- <td class="border px-2 py-1 text-right">{{ $item['hari_kerja_payroll'] }}</td>
-                    <td class="border px-2 py-1 text-right">{{ $item['hari_kerja_presensi'] }}</td> --}}
-                    <td class="border px-2 py-1 text-right">{{ $item['jam_kerja_payroll'] }}</td>
-                    <td class="border px-2 py-1 text-right">{{ $item['jam_kerja_presensi'] }}</td>
-                    <td class="border px-2 py-1 text-right">{{ $item['jam_lembur_payroll'] }}</td>
-                    <td class="border px-2 py-1 text-right">{{ $item['jam_lembur_presensi'] }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="8" class="border px-2 py-2 text-center text-gray-500">
-                        Semua data sama ✔️
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+        <h2 class="text-lg font-semibold mb-4">Data Karyawan</h2>
 
-    <div class="mt-4 text-sm text-gray-700">
-        <strong>Jumlah data cocok:</strong> {{ $jumlah_sama }}
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left border border-gray-200 rounded-xl overflow-hidden">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 border">No</th>
+                        <th class="px-4 py-2 border">Nama</th>
+                        <th class="px-4 py-2 border">Status</th>
+                        <th class="px-4 py-2 border">Gaji Pokok</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($data as $index => $item)
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-4 py-2 border">
+                                {{ $data->firstItem() + $index }}
+                            </td>
+                            <td class="px-4 py-2 border">
+                                {{ $item->nama ?? '-' }}
+                            </td>
+                            <td class="px-4 py-2 border">
+                                {{ $item->status_karyawan }}
+                            </td>
+                            <td class="px-4 py-2 border">
+                                Rp {{ number_format($item->gaji_pokok, 0, ',', '.') }}
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-gray-500">
+                                Data tidak ditemukan
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Pagination --}}
+        <div class="mt-4">
+            {{ $data->links() }}
+        </div>
+
     </div>
 </div>

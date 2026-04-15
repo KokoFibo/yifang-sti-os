@@ -65,77 +65,13 @@ class Test extends Component
   public function render()
   {
 
-    $month = 11;
-    $year = 2026;
 
-    dd('aman');
-    $users = User::select(
-      'users.name',
-      'users.email',
-      'users.password',
-      'users.role',
-      'users.language',
-      'karyawans.id_karyawan as id_karyawan',
-      'companies.company_name'
-    )
-      ->join('karyawans', 'karyawans.id_karyawan', '=', 'users.username')
-      ->join('companies', 'companies.id', '=', 'karyawans.company_id')
-      ->whereNotIn('karyawans.status_karyawan', ['Resigned', 'Blacklist'])
-      ->count();
-
-    dd($users);
-    // dd($data->count());
-
-
-
-
-
-
-
-
-    $payrolls = Payroll::whereYear('date', 2025)
-      ->whereMonth('date', 9)
-      ->get();
-
-    $beda = []; // untuk menampung data yang tidak sama
-    $cx = 0;
-
-    foreach ($payrolls as $payroll) {
-      $presensis = Yfrekappresensi::whereYear('date', 2025)
-        ->whereMonth('date', 9)
-        ->where('user_id', $payroll->id_karyawan)
-        ->get();
-
-      // $total_hari_kerja = Yfrekappresensi::whereYear('date', 2025)
-      //   ->whereMonth('date', 9)
-      //   ->where('user_id', $payroll->id_karyawan)
-      //   ->count();
-
-      $total_jam_kerja = $presensis->sum('total_jam_kerja');
-      $total_jam_lembur = $presensis->sum('total_jam_lembur');
-      // cek perbedaan
-      // $payroll->hari_kerja != $total_hari_kerja ||
-      if (
-        $payroll->jam_kerja != $total_jam_kerja ||
-        $payroll->jam_lembur != $total_jam_lembur
-      ) {
-        $beda[] = [
-          'id_karyawan' => $payroll->id_karyawan,
-          // 'hari_kerja_payroll' => $payroll->hari_kerja,
-          // 'hari_kerja_presensi' => $total_hari_kerja,
-          'jam_kerja_payroll' => $payroll->jam_kerja,
-          'jam_kerja_presensi' => $total_jam_kerja,
-          'jam_lembur_payroll' => $payroll->jam_lembur,
-          'jam_lembur_presensi' => $total_jam_lembur,
-        ];
-      } else {
-        $cx++;
-      }
-    }
+    $data = Karyawan::whereNotIn('status_karyawan', ['Blacklist', 'Resigned'])
+      ->where('gaji_pokok', '<', 2200000)
+      ->paginate(10);
 
     return view('livewire.test', [
-      'beda' => $beda,
-      'jumlah_sama' => $cx,
+      'data' => $data
     ]);
   }
 }
