@@ -85,6 +85,10 @@ class AttendanceController extends Controller
             ->values()
             ->toArray();
 
+        // is slip gaji locked
+        $is_locked = Lock::value('slip_gaji');
+
+
         // Jika tidak ada data attendance
         if ($attendanceData->isEmpty()) {
             return response()->json([
@@ -92,6 +96,7 @@ class AttendanceController extends Controller
                 'data' => [],
                 'available_months' => $availableMonths,
                 'summary' => $this->getEmptySummary(),
+                'is_locked' => $is_locked,
                 'current_month_year' => [
                     'month' => (int)$month,
                     'year' => (int)$year,
@@ -112,6 +117,7 @@ class AttendanceController extends Controller
             'data' => $transformedData,
             'available_months' => $availableMonths,
             'summary' => $summary,
+            'is_locked' => $is_locked,
             'current_month_year' => [
                 'month' => (int)$month,
                 'year' => (int)$year,
