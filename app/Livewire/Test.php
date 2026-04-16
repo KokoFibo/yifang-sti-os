@@ -65,6 +65,26 @@ class Test extends Component
   public function render()
   {
 
+    // $datas = Karyawan::where('company_id', 101)
+    //   ->get();
+    // foreach ($datas as $data) {
+    //   $data->outsource = false;
+    //   $data->save();
+    // }
+
+    Karyawan::query()->update([
+      'outsource' => true
+    ]);
+
+    Karyawan::where('company_id', 101)
+      ->update([
+        'outsource' => false
+      ]);
+
+    $datas = Karyawan::where('company_id', 101)
+      ->get();
+
+    dd($datas);
 
     $data = Karyawan::whereNotIn('status_karyawan', ['Blacklist', 'Resigned'])
       ->where('gaji_pokok', '<', 2200000)
