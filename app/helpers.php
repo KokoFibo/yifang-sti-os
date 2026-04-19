@@ -49,6 +49,7 @@ function createUser($id_karyawan)
             'password' => $password,
             'db_code' => 'sti',                // ✅ FIX sesuai request kamu
             'id_karyawan' => $data->id_karyawan,
+            'id_unik_karyawan' => $data->id,
             'role' => 1,                           // default (ubah kalau perlu)
             'language' => 'Id',
             'outsource' => $data->outsource,       // ✅ ambil dari data
@@ -70,11 +71,10 @@ function createUser($id_karyawan)
     ];
 }
 
-function deleteUserByEmailAPI($email)
+function deleteUserByid_unik_karyawan($id_unik_karyawan)
 {
-    dd($email);
     $response = Http::withToken('yifang18april2026')
-        ->delete('https://presensidb.yifang.co.id/api/user/' . $email);
+        ->delete('https://presensidb.yifang.co.id/api/user/' . $id_unik_karyawan);
     // ->delete('http://127.0.0.1:8000/api/user/' . $id_karyawan);
 
     if ($response->successful()) {
