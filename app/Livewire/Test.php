@@ -71,6 +71,7 @@ class Test extends Component
     //   $data->outsource = false;
     //   $data->save();
     // }
+    dd('aman');
 
     Karyawan::query()->update([
       'outsource' => true
