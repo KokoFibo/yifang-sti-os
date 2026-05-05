@@ -209,7 +209,8 @@
 
                     $total_bpjs_company = 0;
                     $total_bpjs_company =
-                        $d->gaji_bpjs +
+                        // $d->gaji_bpjs +
+                        $d->bpjs_adjustment +
                         $jkk_company +
                         $jkm_company +
                         $kesehatan_company +
