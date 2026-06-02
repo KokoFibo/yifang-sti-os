@@ -2,17 +2,18 @@
 
 namespace App\Livewire;
 
-use App\Models\User;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Jabatan;
 use App\Models\Jobgrade;
-use Livewire\Component;
 use App\Models\Karyawan;
+use App\Models\Placement2;
 use App\Models\Placement;
+use App\Models\User;
 use Google\Service\Batch\Job;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Livewire\Component;
 // use Illuminate\Validation\Rule;
 
 class Karyawanwr extends Component
@@ -20,7 +21,7 @@ class Karyawanwr extends Component
     public $id;
     public $id_karyawan, $nama, $email, $hp, $telepon, $tempat_lahir, $tanggal_lahir, $gender, $status_pernikahan, $golongan_darah, $agama, $etnis;
     public $jenis_identitas, $no_identitas, $alamat_identitas, $alamat_tinggal;
-    public $status_karyawan, $tanggal_bergabung, $company_id, $placement_id, $department_id, $jabatan_id, $level_jabatan, $nama_bank, $nomor_rekening;
+    public $status_karyawan, $tanggal_bergabung, $company_id, $placement_id, $placement2_id, $department_id, $jabatan_id, $level_jabatan, $nama_bank, $nomor_rekening;
 
     public $metode_penggajian, $gaji_pokok, $gaji_overtime, $gaji_shift_malam_satpam;
     public $bonus, $tunjangan_jabatan, $tunjangan_bahasa;
@@ -36,6 +37,7 @@ class Karyawanwr extends Component
     public $pilih_company;
     public $pilih_department;
     public $pilih_placement;
+    public $pilih_placement2;
     public $jobgrades;
     public $outsource;
 
@@ -46,6 +48,7 @@ class Karyawanwr extends Component
         $this->pilih_company = Company::orderBy('company_name', 'asc')->get();
         $this->pilih_department = Department::orderBy('nama_department', 'asc')->get();
         $this->pilih_placement = Placement::orderBy('placement_name', 'asc')->get();
+        $this->pilih_placement2 = Placement2::orderBy('nama_placement', 'asc')->get();
 
         $this->is_update = false;
         $this->update = false;
@@ -92,6 +95,7 @@ class Karyawanwr extends Component
         'tanggal_bergabung' => 'date|required|after:yesterday',
         'company_id' => 'required',
         'placement_id' => 'required',
+        'placement2_id' => 'required',
         'department_id' => 'required',
         'jabatan_id' => 'required',
         'level_jabatan' => 'nullable',
@@ -186,6 +190,7 @@ class Karyawanwr extends Component
             $data->tanggal_bergabung = $this->tanggal_bergabung;
             $data->company_id = $this->company_id;
             $data->placement_id = $this->placement_id;
+            $data->placement2_id = $this->placement2_id;
             $data->department_id = $this->department_id;
             $data->jabatan_id = $this->jabatan_id;
             $data->level_jabatan = $this->level_jabatan;
@@ -312,6 +317,7 @@ class Karyawanwr extends Component
             $data->tanggal_bergabung = $this->tanggal_bergabung;
             $data->company_id = $this->company_id;
             $data->placement_id = $this->placement_id;
+            $data->placement2_id = $this->placement2_id;
             $data->department_id = $this->department_id;
             $data->jabatan_id = $this->jabatan_id;
             $data->level_jabatan = $this->level_jabatan;

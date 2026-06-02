@@ -21,6 +21,8 @@
         <a href="/addcompany"><button class="btn btn-primary">Add Company</button></a>
         <a href="/addplacement"><button class="btn btn-primary">Add Placement/Directorate</button></a>
         <a href="/department"><button class="btn btn-primary">Add Departement</button></a>
+        <a href="/placementsti"><button class="btn btn-primary">Add Placement2 khusus STI</button></a>
+
         <button wire:click='clear_build' class="btn btn-primary">Clear Build</button>
         <button wire:click='clear_payroll_rebuild' class="btn btn-primary">Clear Payroll Rebuild</button>
         <button wire:click='delete_failed_jobs' class="btn btn-primary">Delete Failed Job</button>
@@ -30,6 +32,7 @@
         <a href="/harikhusus"><button class="btn btn-primary">Hari/tanggal khusus</button></a>
         <a href="/cekperbulan"><button class="btn btn-primary">Cek Perbulan yang < 8jam</button></a>
         <a href="/clean-email"><button class="btn btn-primary">Clean Email resigned_</button></a>
+
 
 
     </div>

@@ -287,6 +287,27 @@
                         </div>
 
                     </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="form-label">{{ __('Placement') }} <span
+                                    class="text-danger">*</span></label>
+                            <select class="form-select @error('outsource') is-invalid @enderror"
+                                aria-label="Default select example" wire:model="placement2_id">
+                                <option value=" ">{{ __('Pilih Placement') }}</option>
+                                @foreach ($pilih_placement2 as $key => $nj)
+                                    @if ($nj->id != 100)
+                                        <option value="{{ $nj->id }}">{{ $nj->nama_placement }}</option>
+                                    @endif
+                                @endforeach
+                            </select>
+                            @error('outsource')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>

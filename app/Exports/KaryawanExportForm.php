@@ -17,11 +17,12 @@ class KaryawanExportForm implements FromView,  ShouldAutoSize, WithColumnFormatt
     /**
      * @return \Illuminate\Support\Collection
      */
-    protected $selected_placement, $selected_company, $selectStatus, $search_etnis;
+    protected $selected_placement, $selected_placement2, $selected_company, $selectStatus, $search_etnis;
 
-    public function __construct($selected_placement, $selected_company, $selected_department, $selectStatus, $search_etnis)
+    public function __construct($selected_placement, $selected_placement2, $selected_company, $selected_department, $selectStatus, $search_etnis)
     {
         $this->selected_placement = $selected_placement;
+        $this->selected_placement2 = $selected_placement2;
         $this->selected_company = $selected_company;
         $this->selected_department = $selected_department;
         $this->selectStatus = $selectStatus;
@@ -44,6 +45,10 @@ class KaryawanExportForm implements FromView,  ShouldAutoSize, WithColumnFormatt
             $data = $data->where('placement_id', $this->selected_placement);
         }
 
+        if ($this->selected_placement2) {
+            $data = $data->where('placement2_id', $this->selected_placement2);
+        }
+
         if ($this->selected_company) {
             $data = $data->where('company_id', $this->selected_company);
         }
@@ -59,25 +64,17 @@ class KaryawanExportForm implements FromView,  ShouldAutoSize, WithColumnFormatt
         $data = $data->get();
 
         $placement = nama_placement($this->selected_placement);
+        $placement2 = nama_placement2($this->selected_placement2);
         $company = nama_company($this->selected_company);
         $department = nama_department($this->selected_department);
 
 
 
-        // if ($placement && $company) {
-        //     $header_text = "Excel Karyawan Company $company, Placement $placement";
-        // } elseif ($placement) {
-        //     $header_text = "Excel Karyawan Placement $placement";
-        // } elseif ($company) {
-        //     $header_text = "Excel Karyawan Company $company";
-        // } else {
-        //     $header_text = 'Excel Seluruh Karyawan';
-        // }
-
-        if ($placement || $company || $department || $this->search_etnis) {
+        if ($placement || $placement2 || $company || $department || $this->search_etnis) {
             $header_text = 'Form Data Karyawan';
             if ($company) $header_text = $header_text . ' Company ' . $company;
-            if ($placement) $header_text = $header_text . ' Placement ' . $placement;
+            if ($placement) $header_text = $header_text . ' Directorate ' . $placement;
+            if ($placement2) $header_text = $header_text . ' Placement ' . $placement2;
             if ($department) $header_text = $header_text . ' Department ' . $department;
             if ($this->search_etnis) $header_text = $header_text . ' Etnis ' . $this->search_etnis;
         } else {

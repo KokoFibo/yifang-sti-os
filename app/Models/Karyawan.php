@@ -36,6 +36,10 @@ class Karyawan extends Model
     {
         return $this->belongsTo(Placement::class);
     }
+    public function placement2()
+    {
+        return $this->belongsTo(Placement2::class);
+    }
 
     public function getActivitylogOptions(): LogOptions
     {

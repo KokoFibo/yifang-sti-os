@@ -74,6 +74,7 @@ use App\Livewire\Payrollwr;
 use App\Livewire\PerbulanKurangBayar;
 use App\Livewire\PermohonanPersonnel;
 use App\Livewire\Placementreport;
+use App\Livewire\Placementsti;
 use App\Livewire\Presensidetailwr;
 use App\Livewire\Prindexwr;
 use App\Livewire\Profile;
@@ -354,6 +355,8 @@ Route::middleware(['auth'])->group(function () {
                             Route::get('/jobgrade', Jobgradewr::class);
                             Route::get('/cekperbulan', PerbulanKurangBayar::class);
                             Route::get('clean-email', Cleanemail::class);
+
+                            Route::get('/placementsti', Placementsti::class);
 
 
 

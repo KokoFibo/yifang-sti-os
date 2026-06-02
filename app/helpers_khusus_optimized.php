@@ -644,7 +644,7 @@ function hitungBPJSdanPPH21(
         + $total_gaji_lembur
         + $gaji_libur
         + $tambahan_shift_malam;
-
+ 
     $tg =
         $gaji_bpjs_adjust
         + $jkk_company + $jkm_company + $kesehatan_company +
