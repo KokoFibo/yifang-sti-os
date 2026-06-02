@@ -2,27 +2,28 @@
 
 namespace App\Livewire;
 
-use App\Models\User;
+use App\Livewire\Karyawanindexwr;
+use App\Models\Applicantfile;
 use App\Models\Company;
+use App\Models\Department;
 use App\Models\Jabatan;
-use Livewire\Component;
 use App\Models\Jobgrade;
 use App\Models\Karyawan;
+use App\Models\Placement2;
 use App\Models\Placement;
-use App\Models\Department;
-use Livewire\Attributes\On;
-use App\Rules\FileSizeLimit;
-use Livewire\Attributes\Url;
-use App\Models\Applicantfile;
-use Livewire\WithFileUploads;
-use App\Livewire\Karyawanindexwr;
+use App\Models\User;
 use App\Rules\AllowedFileExtension;
+use App\Rules\FileSizeLimit;
+use Google\Service\YouTube\ThirdPartyLinkStatus;
 use Illuminate\Support\Facades\Hash;
-use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\RequiredIf;
-use Google\Service\YouTube\ThirdPartyLinkStatus;
+use Intervention\Image\ImageManager;
 use Intervention\Image\ImageManagerStatic as Image;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Updatekaryawanwr extends Component
 {
@@ -31,7 +32,7 @@ class Updatekaryawanwr extends Component
     public $id;
     public $id_karyawan, $nama, $email, $hp, $telepon, $tempat_lahir, $tanggal_lahir, $gender, $status_pernikahan, $golongan_darah, $agama, $etnis;
     public $jenis_identitas, $no_identitas, $alamat_identitas, $alamat_tinggal;
-    public $status_karyawan, $tanggal_bergabung, $tanggal_resigned, $tanggal_blacklist,  $company_id, $placement_id,  $department_id, $jabatan_id, $level_jabatan, $nama_bank, $nomor_rekening;
+    public $status_karyawan, $tanggal_bergabung, $tanggal_resigned, $tanggal_blacklist,  $company_id, $placement_id, $placement2_id, $department_id, $jabatan_id, $level_jabatan, $nama_bank, $nomor_rekening;
     public $gaji_pokok, $gaji_overtime, $gaji_shift_malam_satpam, $metode_penggajian,  $bonus, $tunjangan_jabatan, $tunjangan_bahasa;
     public $tunjangan_skill, $tunjangan_lembur_sabtu, $tunjangan_lama_kerja,  $iuran_air, $iuran_locker, $denda, $gaji_bpjs, $potongan_JHT, $potongan_JP, $potongan_JKK, $potongan_JKM;
     public  $potongan_kesehatan, $update;
@@ -47,6 +48,7 @@ class Updatekaryawanwr extends Component
     public $pilih_company;
     public $pilih_department;
     public $pilih_placement;
+    public $pilih_placement2;
     public $delete_id;
     public $folder_name;
     public $is_folder_kosong = false;
@@ -160,6 +162,7 @@ class Updatekaryawanwr extends Component
         $this->pilih_company = Company::orderBy('company_name', 'asc')->get();
         $this->pilih_department = Department::orderBy('nama_department', 'asc')->get();
         $this->pilih_placement = Placement::orderBy('placement_name', 'asc')->get();
+        $this->pilih_placement2 = Placement2::orderBy('nama_placement', 'asc')->get();
 
 
 
@@ -205,6 +208,7 @@ class Updatekaryawanwr extends Component
 
         $this->company_id = $data->company_id;
         $this->placement_id = $data->placement_id;
+        $this->placement2_id = $data->placement2_id;
         $this->department_id = $data->department_id;
         $this->jabatan_id = $data->jabatan_id;
 
@@ -372,6 +376,7 @@ class Updatekaryawanwr extends Component
             'tanggal_bergabung' => 'date|required',
             'company_id' => 'required',
             'placement_id' => 'required',
+            'placement2_id' => 'required',
             'department_id' => 'required',
             'jabatan_id' => 'required',
             'level_jabatan' => 'nullable',
@@ -827,6 +832,7 @@ class Updatekaryawanwr extends Component
 
         $data->company_id = $this->company_id;
         $data->placement_id = $this->placement_id;
+        $data->placement2_id = $this->placement2_id;
         $data->department_id = $this->department_id;
         $data->jabatan_id = $this->jabatan_id;
         $data->level_jabatan = $this->level_jabatan;

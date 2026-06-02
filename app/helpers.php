@@ -1,31 +1,32 @@
 <?php
 
-use Carbon\Carbon;
-use App\Models\Ter;
-use App\Models\Lock;
-use App\Models\User;
-use App\Models\Company;
-use App\Models\Jabatan;
-use App\Models\Payroll;
-use App\Models\Timeoff;
-use App\Models\Jobgrade;
-use App\Models\Karyawan;
-use App\Models\Tambahan;
-use App\Models\Placement;
-use App\Models\Requester;
-use App\Models\Department;
-use App\Models\Harikhusus;
-use Illuminate\Support\Str;
 use App\Models\Applicantdata;
 use App\Models\Applicantfile;
+use App\Models\Company;
 use App\Models\Dashboarddata;
+use App\Models\Department;
+use App\Models\Harikhusus;
+use App\Models\Jabatan;
+use App\Models\Jobgrade;
+use App\Models\Karyawan;
 use App\Models\Liburnasional;
-use App\Models\Yfrekappresensi;
-use App\Models\Timeoffrequester;
+use App\Models\Lock;
+use App\Models\Payroll;
 use App\Models\Personnelrequestform;
+use App\Models\Placement2;
+use App\Models\Placement;
+use App\Models\Requester;
+use App\Models\Tambahan;
+use App\Models\Ter;
+use App\Models\Timeoff;
+use App\Models\Timeoffrequester;
+use App\Models\User;
+use App\Models\Yfrekappresensi;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 
 
@@ -912,6 +913,14 @@ function nama_placement($id)
     if ($id != null) {
         $data = Placement::find($id);
         return $data->placement_name;
+    }
+}
+function nama_placement2($id)
+{
+
+    if ($id != null) {
+        $data = Placement2::find($id);
+        return $data->nama_placement;
     }
 }
 

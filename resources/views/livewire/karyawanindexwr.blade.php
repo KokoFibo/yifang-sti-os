@@ -152,6 +152,18 @@
                                         </select>
                                     </div>
                                 </th>
+                                <th style="width: 220px; border-style: none;">
+                                    <div style="width: 130px">
+                                        <select wire:model.live="search_placement2"class="form-select"
+                                            aria-label="Default select example">
+                                            <option value="">{{ __('Placement') }}</option>
+                                            @foreach ($placement2s as $j)
+                                                <option value="{{ $j }}">{{ nama_placement2($j) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </th>
+
 
                                 @if (auth()->user()->role >= 7)
                                     <th style="width: 220px; border-style: none;">
@@ -282,6 +294,8 @@
                                 </th>
                                 <th class="text-center" wire:click="sortColumnName('jabatan_id')">
                                     {{ __('Jabatan') }} </th>
+                                <th class="text-center" wire:click="sortColumnName('placement2_id')">
+                                    {{ __('Placement') }} </th>
                                 @if (Auth::user()->role > 6)
                                     <th class="text-center" wire:click="sortColumnName('etnis')">
                                         {{ __('Etnis') }}
@@ -366,6 +380,10 @@
                                     <td class="text-center">{{ $data->placement->placement_name }}</td>
                                     <td class="text-center">{{ $data->department->nama_department }}</td>
                                     <td class="text-center">{{ $data->jabatan->nama_jabatan }}</td>
+                                    {{-- <td class="text-center">{{ $data->placement2->nama_placement }}</td> --}}
+                                    <td class="text-center">
+                                        {{ $data->placement2?->nama_placement }}
+                                    </td>
 
                                     @if (Auth::user()->role > 6)
                                         <td class="text-center">{{ $data->etnis }}</td>
