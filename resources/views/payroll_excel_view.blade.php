@@ -60,6 +60,16 @@
                     </th>
                 </tr>
             @endif
+            @if ($nama_placement2 != null)
+                <tr>
+                    <th>
+                        <h3>Placement :</h3>
+                    </th>
+                    <th>
+                        <h3>{{ $nama_placement2 }}</h3>
+                    </th>
+                </tr>
+            @endif
             {{-- TR baris atas utk colspan --}}
             <tr>
                 <th></th>
@@ -118,6 +128,7 @@
                 <th style="text-align: center;">Company</th>
                 <th style="text-align: center;">Directorate</th>
                 <th style="text-align: center;">Department</th>
+                <th style="text-align: center;">Placement</th>
                 <th style="text-align: center;">Metode Penggajian</th>
                 <th style="text-align: center;">Total Hari Kerja</th>
                 <th style="text-align: center;">Total Jam Kerja (Bersih)</th>
@@ -261,6 +272,7 @@
                     <td style="text-align: center"> {{ nama_company($d->company_id) }}</td>
                     <td style="text-align: center"> {{ nama_placement($d->placement_id) }}</td>
                     <td style="text-align: center"> {{ nama_department($d->department_id) }}</td>
+                    <td style="text-align: center"> {{ nama_placement2($d->placement2_id) }}</td>
                     <td style="text-align: center"> {{ $d->metode_penggajian }}</td>
                     <td> {{ $d->hari_kerja }}</td>
                     <td> {{ $d->jam_kerja }}</td>

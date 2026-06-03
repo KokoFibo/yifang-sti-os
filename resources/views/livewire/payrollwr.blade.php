@@ -124,13 +124,7 @@
         @if (!check_rebuilding())
 
             <div class="d-flex  flex-column gap-2 flex-xl-row align-items-center justify-content-between px-4 mb-2">
-                {{-- <p>directorate: {{ $selected_placement }}</p>
-                <p>company: {{ $selected_company }}</p>
-                <p>department: {{ $selected_departemen }}</p>
-                <p>search: {{ $search }}</p>
-                <p>month {{ $month }}</p>
-                <p>month {{ $year }}</p>
-                <p>search: {{ $search }}</p> --}}
+
                 <div class="d-flex gap-2 flex-lg-row flex-column">
                     <button class="btn btn-info nightowl-daylight">{{ __('Total Gaji') }} : Rp.
                         {{ number_format($total) }}</button>
@@ -275,14 +269,22 @@
                         <select wire:model.live="selected_departemen" class="form-select"
                             aria-label="Default select example">
                             <option value="0"selected>{{ __('All Department') }}</option>
-                            {{-- @foreach ($departments as $department)
-                                <option value="{{ nama_department($department) }}">{{ nama_department($department) }}
-                                </option>
-                            @endforeach --}}
+
                             @foreach ($departments as $d)
                                 <option value="{{ $d->id }}">{{ $d->nama_department }}</option>
                             @endforeach
 
+
+                        </select>
+                    </div>
+                    {{-- Placement2 --}}
+                    <div>
+                        <select wire:model.live="selected_placement2" class="form-select"
+                            aria-label="Default select example">
+                            <option value="0"selected>{{ __('All Placements') }}</option>
+                            @foreach ($placement2s as $p)
+                                <option value="{{ $p->id }}">{{ $p->nama_placement }}
+                            @endforeach
 
                         </select>
                     </div>
@@ -322,14 +324,17 @@
                                         class="fa-solid fa-sort"></i></th>
                                 <th wire:click="sortColumnName('status_karyawan')">{{ __('Status') }} <i
                                         class="fa-solid fa-sort"></i></th>
-                                <th wire:click="sortColumnName('jabatan')">{{ __('Jabatan') }} <i
+                                <th wire:click="sortColumnName('jabatan_id')">{{ __('Jabatan') }} <i
                                         class="fa-solid fa-sort"></i></th>
-                                <th wire:click="sortColumnName('placement')">{{ __('Directorate') }} <i
+                                <th wire:click="sortColumnName('placement_id')">{{ __('Directorate') }} <i
                                         class="fa-solid fa-sort"></i>
                                 </th>
-                                <th wire:click="sortColumnName('company')">{{ __('Company') }} <i
+                                <th wire:click="sortColumnName('company_id')">{{ __('Company') }} <i
                                         class="fa-solid fa-sort"></i></th>
-                                <th wire:click="sortColumnName('departemen')">{{ __('Department') }} <i
+                                <th wire:click="sortColumnName('department_id')">{{ __('Department') }} <i
+                                        class="fa-solid fa-sort"></i>
+                                </th>
+                                <th wire:click="sortColumnName('placement2_id')">{{ __('Placement') }} <i
                                         class="fa-solid fa-sort"></i>
                                 </th>
                                 <th wire:click="sortColumnName('metode_penggajian')">{{ __('Metode Penggajian') }}
@@ -446,6 +451,7 @@
                                             <td>{{ nama_placement($p->placement_id) }}</td>
                                             <td>{{ nama_company($p->company_id) }}</td>
                                             <td>{{ nama_department($p->department_id) }}</td>
+                                            <td>{{ nama_placement2($p->placement2_id) }}</td>
                                             <td>{{ $p->metode_penggajian }}</td>
                                             <td class="text-end">{{ $p->hari_kerja }}</td>
                                             <td class="text-end">{{ number_format($p->jam_kerja, 1) }}</td>

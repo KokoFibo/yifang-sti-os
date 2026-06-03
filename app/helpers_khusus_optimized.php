@@ -162,6 +162,7 @@ END AS subtotal
 
                 'company_id' => $k->company_id,
                 'placement_id' => $k->placement_id,
+                'placement2_id' => $k->placement2_id,
                 'department_id' => $k->department_id,
                 'jabatan_id' => $k->jabatan_id,
 
@@ -265,6 +266,7 @@ END AS subtotal
 
                 'company_id' => $k->company_id,
                 'placement_id' => $k->placement_id,
+                'placement2_id' => $k->placement2_id,
                 'department_id' => $k->department_id,
                 'jabatan_id' => $k->jabatan_id,
 
@@ -494,6 +496,15 @@ WHEN p.total_noscan <= 3 THEN 0
             $core_cash = $p->gaji_bulan_ini - $hasil['gaji_bpjs_adjust'];
             $total_bpjs = 0;
             $total_bpjs = $hasil['total_bpjs'] + $p->bonus1x + $p->thr - $p->potongan1x;
+            $pph_temp = $hasil['pph21'];
+
+
+            if ($total_bpjs < 12000000) {
+                $pph_temp = 0;
+            }
+
+
+
             DB::table('payrolls')
                 ->where('id_karyawan', $p->id_karyawan)
                 ->where('date', $p->date)
@@ -520,8 +531,14 @@ WHEN p.total_noscan <= 3 THEN 0
                     // 'total_bpjs' => $hasil['total_bpjs'],
                     'total_bpjs' => $total_bpjs,
                     // 'pajak' => $hasil['pph21'],
-                    'total' => DB::raw("total - {$hasil['pph21']} - {$hasil['bpjs_employee']} - {$hasil['tanggungan']}"),
-                    // 'total' => DB::raw("total - {$hasil['pph21']}"),
+                    // if($total_bpjs < 12000000)
+                    //     {
+
+                    //     'total' => DB::raw("total - {$hasil['pph21']} - {$hasil['bpjs_employee']} - {$hasil['tanggungan']}"),
+                    //     }
+                    'total' => DB::raw("total - $pph_temp - {$hasil['bpjs_employee']} - {$hasil['tanggungan']}"),
+                    // 'total' => DB::raw("total -  {$hasil['bpjs_employee']} - {$hasil['tanggungan']}"),
+
                     'updated_at' => now(),
                 ]);
         }
@@ -644,7 +661,7 @@ function hitungBPJSdanPPH21(
         + $total_gaji_lembur
         + $gaji_libur
         + $tambahan_shift_malam;
- 
+
     $tg =
         $gaji_bpjs_adjust
         + $jkk_company + $jkm_company + $kesehatan_company +

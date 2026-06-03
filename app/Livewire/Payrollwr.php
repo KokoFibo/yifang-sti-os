@@ -2,30 +2,31 @@
 
 namespace App\Livewire;
 
-use Carbon\Carbon;
-use App\Models\Lock;
-use App\Models\Company;
-use App\Models\Payroll;
-use Livewire\Component;
-use App\Jobs\rebuildJob;
-use App\Models\Karyawan;
-use App\Models\Tambahan;
-use App\Models\Placement;
-use App\Exports\PphExport;
-use App\Models\Department;
-use App\Models\Jamkerjaid;
-use Livewire\WithPagination;
-use App\Jobs\BuildPayrollJob;
-use App\Exports\PayrollExport;
-use App\Models\Yfrekappresensi;
 use App\Exports\BankReportExcel;
-use App\Exports\PlacementExport;
 use App\Exports\DepartmentExport;
 use App\Exports\ExcelDetailReport;
+use App\Exports\PayrollExport;
 use App\Exports\PayrollExportFLexible;
+use App\Exports\PlacementExport;
+use App\Exports\PphExport;
+use App\Jobs\BuildPayrollJob;
+use App\Jobs\rebuildJob;
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\Jamkerjaid;
+use App\Models\Karyawan;
+use App\Models\Lock;
+use App\Models\Payroll;
+use App\Models\Placement2;
+use App\Models\Placement;
+use App\Models\Tambahan;
+use App\Models\Yfrekappresensi;
 use Aws\History;
+use Carbon\Carbon;
 use Google\Service\YouTube\ThirdPartyLinkStatus;
 use Illuminate\Support\Facades\DB;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 
 
@@ -37,6 +38,7 @@ class Payrollwr extends Component
 
     public $selected_company = 0;
     public $selected_placement = 0;
+    public $selected_placement2 = 0;
     public $selected_departemen = 0;
     // public $departments;
     public $search;
@@ -54,7 +56,7 @@ class Payrollwr extends Component
     public $lock_data;
     public $select_month, $select_year;
     public $payroll_data, $total_data;
-    public   $companies, $departments, $placements;
+    public   $companies, $departments, $placements, $placement2s;
 
     public function excelDetailReport()
     {
@@ -82,6 +84,7 @@ class Payrollwr extends Component
         $nama_company = '';
         $nama_directorate = '';
         $nama_departement = '';
+        $nama_placement2 = '';
         if ($this->selected_company != 0) {
             if ($this->selected_company == 0) {
                 $nama_company = 'all-companies-';
@@ -96,6 +99,13 @@ class Payrollwr extends Component
                 $nama_directorate = 'directorate-' . nama_placement($this->selected_placement) . '-';
             }
         }
+        if ($this->selected_placement2 != 0) {
+            if ($this->selected_placement2 == 0) {
+                $nama_placement2 = 'all-placement-';
+            } else {
+                $nama_placement2 = 'placement-' . nama_placement2($this->selected_placement2) . '-';
+            }
+        }
         if ($this->selected_departemen != 0) {
             if ($this->selected_departemen == 0) {
                 $nama_departement = 'all-department-';
@@ -104,105 +114,75 @@ class Payrollwr extends Component
             }
         }
 
-        if ($this->selected_company == 0 && $this->selected_placement == 0 && $this->selected_departemen == 0) {
+        if ($this->selected_company == 0 && $this->selected_placement == 0 && $this->selected_placement2 == 0 && $this->selected_departemen == 0) {
 
             $nama_file = 'Payroll-all-' . monthName($this->month) . '-' . $this->year . '.xlsx';
         } else {
 
-            $nama_file = 'Payroll-' . $nama_directorate . $nama_company . $nama_departement . monthName($this->month) . '-' . $this->year . '.xlsx';
+            $nama_file = 'Payroll-' . $nama_directorate . $nama_company . $nama_departement . $nama_placement2 . monthName($this->month) . '-' . $this->year . '.xlsx';
         }
 
         if ($this->search != null) {
-            $nama_file = 'Payroll-' . $nama_directorate . $nama_company . $nama_departement . 'search-' . $this->search . '-' . monthName($this->month) . '-' . $this->year . '.xlsx';
+            $nama_file = 'Payroll-' . $nama_directorate . $nama_company . $nama_departement . $nama_placement2 . 'search-' . $this->search . '-' . monthName($this->month) . '-' . $this->year . '.xlsx';
         }
 
-        // $nama_file = nama_file_excel($nama_file, $this->month, $this->year);
-        // dd($nama_file);
 
 
-        return Excel::download(new PayrollExportFLexible($this->columnName, $this->direction, $this->search,  $this->selected_company, $this->selected_placement, $this->selected_departemen, $this->status, $this->month, $this->year), $nama_file,);
-
-        // return Excel::download(new PayrollExport($this->selected_placement, $this->selected_company, $this->selected_departemen,  $this->status, $this->month, $this->year), $nama_file);
-
-        // if ($this->selected_company != 0) {
-        //     return Excel::download(new PayrollExport($this->selected_company, $this->status, $this->month, $this->year), $nama_file);
-        // } else if ($this->selected_placement != 0) {
-        //     return Excel::download(new PlacementExport($this->selected_placement, $this->status, $this->month, $this->year), $nama_file);
-        // } else {
-        //     return Excel::download(new DepartmentExport($this->selected_departemen, $this->status, $this->month, $this->year), $nama_file);
-        // }
+        return Excel::download(new PayrollExportFLexible($this->columnName, $this->direction, $this->search,  $this->selected_company, $this->selected_placement,  $this->selected_departemen, $this->status, $this->month, $this->year, $this->selected_placement2), $nama_file,);
     }
 
 
     public function bankexcel()
     {
-        $nama_file = '';
+        $query = Payroll::query()
+            ->whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned'])
+            ->whereMonth('date', $this->month)
+            ->whereYear('date', $this->year)
+            ->orderBy('id_karyawan', 'asc');
+
+        $nama_file = 'semua_karyawan_Bank.xlsx';
+
         if ($this->selected_company != 0) {
-            if ($this->selected_company == 0) {
-                $payroll = Payroll::whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned'])
-                    ->whereMonth('date', $this->month)
-                    ->whereYear('date', $this->year)
-                    ->orderBy('id_karyawan', 'asc')
-                    ->get(['nama', 'nama_bank', 'nomor_rekening', 'total', 'company_id', 'placement_id', 'department_id']);
-                $nama_file = 'semua_karyawan_Bank.xlsx';
-            } else {
-                $payroll = Payroll::whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned'])
-                    ->whereMonth('date', $this->month)
-                    ->whereYear('date', $this->year)
-                    ->orderBy('id_karyawan', 'asc')
-                    ->where('company_id', $this->selected_company)
-                    ->get(['nama', 'nama_bank', 'nomor_rekening', 'total', 'company_id', 'placement_id', 'department_id']);
 
-                $nama_file = nama_company($this->selected_company) . '_Company_Bank.xlsx';
-            }
+            $query->where('company_id', $this->selected_company);
+
+            $nama_file = nama_company($this->selected_company) . '_Company_Bank.xlsx';
         } elseif ($this->selected_placement != 0) {
-            if ($this->selected_placement == 0) {
-                $payroll = Payroll::whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned'])
-                    ->whereMonth('date', $this->month)
-                    ->whereYear('date', $this->year)
-                    ->orderBy('id_karyawan', 'asc')
-                    ->get(['nama', 'nama_bank', 'nomor_rekening', 'total', 'company_id', 'placement_id', 'department_id']);
 
-                $nama_file = 'semua_karyawan_Bank.xlsx';
-            } else {
-                $payroll = Payroll::whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned'])
-                    ->whereMonth('date', $this->month)
-                    ->whereYear('date', $this->year)
-                    ->orderBy('id_karyawan', 'asc')
-                    ->where('placement_id', $this->selected_placement)
-                    ->get(['nama', 'nama_bank', 'nomor_rekening', 'total', 'company_id', 'placement_id', 'department_id']);
+            $query->where('placement_id', $this->selected_placement);
 
-                $nama_file = nama_placement($this->selected_placement) . '_Directorate_Bank.xlsx';
-            }
-        } else {
-            if ($this->selected_departemen == 0) {
-                $payroll = Payroll::whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned'])
-                    ->whereMonth('date', $this->month)
-                    ->whereYear('date', $this->year)
-                    ->orderBy('id_karyawan', 'asc')
-                    ->get(['nama', 'nama_bank', 'nomor_rekening', 'total', 'company_id', 'placement_id', 'department_id']);
+            $nama_file = nama_placement($this->selected_placement) . '_Directorate_Bank.xlsx';
+        } elseif ($this->selected_placement2 != 0) {
 
-                $nama_file = 'semua_karyawan_Bank.xlsx';
-            } else {
-                $payroll = Payroll::whereIn('status_karyawan', ['PKWT', 'PKWTT', 'Dirumahkan', 'Resigned'])
-                    ->whereMonth('date', $this->month)
-                    ->whereYear('date', $this->year)
-                    ->orderBy('id_karyawan', 'asc')
-                    ->where('department_id', $this->selected_departemen)
-                    ->get(['nama', 'nama_bank', 'nomor_rekening', 'total', 'company_id', 'placement_id', 'department_id']);
+            $query->where('placement2_id', $this->selected_placement2);
 
+            $nama_file = nama_placement($this->selected_placement2) . '_Placement2_Bank.xlsx';
+        } elseif ($this->selected_departemen != 0) {
 
-                $nama_file = sambungKata($this->selected_departemen) . '_Department_Bank.xlsx';
-            }
+            $query->where('department_id', $this->selected_departemen);
+
+            $nama_file = sambungKata($this->selected_departemen) . '_Department_Bank.xlsx';
         }
 
-        $nama_file = nama_file_excel($nama_file, $this->month, $this->year);
-        // $nama_file = 'test.xlsx';
-        // dd($this->selected_company, $this->selected_placement, $this->selected_departemen);
+        $payroll = $query->get([
+            'nama',
+            'nama_bank',
+            'nomor_rekening',
+            'total',
+            'company_id',
+            'placement_id',
+            'placement2_id',
+            'department_id'
+        ]);
 
-        // return Excel::download(new DepartmentExport($this->selected_departemen, $this->status, $this->month, $this->year), $nama_file);
+        $nama_file = nama_file_excel(
+            $nama_file,
+            $this->month,
+            $this->year
+        );
 
-        return Excel::download(new BankReportExcel($this->status, $this->month, $this->year, $this->selected_company, $this->selected_placement, $this->selected_departemen), $nama_file,);
+
+        return Excel::download(new BankReportExcel($this->status, $this->month, $this->year, $this->selected_company, $this->selected_placement, $this->selected_placement2, $this->selected_departemen), $nama_file,);
         // return Excel::download(new BankReportExcel($payroll), $nama_file, $this->selected_company, $this->selected_placement, $this->selected_departemen);
     }
 
@@ -287,14 +267,13 @@ class Payrollwr extends Component
     public function mount()
     {
 
-        $this->placements = Placement::orderBy('placement_name', 'ASC')->get();
+        // $this->placements = Placement::orderBy('p, lacement_name', 'ASC')->get();
+
+
+        $this->placement2s = Placement2::orderBy('nama_placement', 'ASC')->get();
         $this->companies = Company::orderBy('company_name', 'ASC')->get();
         $this->departments = Department::orderBy('nama_department', 'ASC')->get();
-        // $this->departments = Karyawan::select('department_id')
-        //     ->distinct()
-        //     ->pluck('department_id')
-        //     ->toArray();
-        // $this->bulan(); 
+
         // Panggil fungsi bulan untuk memperbarui daftar bulan
 
         $data = Payroll::first();
@@ -319,6 +298,14 @@ class Payrollwr extends Component
                 ->first();
             $this->data_karyawan = Karyawan::where('id_karyawan', $data->id_karyawan)->first();
         }
+
+        $this->placements = Payroll::join('placements', 'placements.id', '=', 'payrolls.placement_id')
+            ->whereMonth('payrolls.date', $this->month)
+            ->whereYear('payrolls.date', $this->year)
+            ->select('placements.id', 'placements.placement_name')
+            ->distinct()
+            ->orderBy('placements.placement_name', 'ASC')
+            ->get();
 
         $lock = Lock::find(1);
         $this->lock_presensi = $lock->presensi;
@@ -348,13 +335,6 @@ class Payrollwr extends Component
         $lock->data = $this->lock_data;
         $lock->save();
     }
-
-
-
-    // public function getPayrollQueue()
-    // {
-    //     $this->dispatch(new BuildPayrollJob($this->month, $this->year));
-    // }
 
     public function rebuildOptimized()
     {
@@ -462,7 +442,6 @@ class Payrollwr extends Component
             }
         }
 
-        // $this->dispatch('success', message: 'Bonus dan Potangan added');
         $this->dispatch(
             'message',
             type: 'success',
@@ -470,7 +449,7 @@ class Payrollwr extends Component
         );
     }
 
-    public function getPayrollQuery($statuses, $search = null, $placement_id = null, $company_id = null, $department_id = null)
+    public function getPayrollQuery($statuses, $search = null, $placement_id = null, $placement2_id = null, $company_id = null, $department_id = null)
     {
         return Payroll::query()
 
@@ -488,6 +467,9 @@ class Payrollwr extends Component
             })
             ->when($placement_id, function ($query) use ($placement_id) {
                 $query->where('placement_id', $placement_id);
+            })
+            ->when($placement2_id, function ($query) use ($placement2_id) {
+                $query->where('placement2_id', $placement2_id);
             })
             ->when($company_id, function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
@@ -513,7 +495,14 @@ class Payrollwr extends Component
     }
     public function updatedSelectedPlacement()
     {
-        $this->placements = Placement::orderBy('placement_name', 'ASC')->get();
+        // $this->placements = Placement::orderBy('placement_name', 'ASC')->get();
+        $this->placements = Payroll::join('placements', 'placements.id', '=', 'payrolls.placement_id')
+            ->whereMonth('payrolls.date', $this->month)
+            ->whereYear('payrolls.date', $this->year)
+            ->select('placements.id', 'placements.placement_name')
+            ->distinct()
+            ->orderBy('placements.placement_name', 'ASC')
+            ->get();
 
 
         $company_ids = Payroll::where('placement_id', $this->selected_placement)
@@ -535,62 +524,47 @@ class Payrollwr extends Component
         $this->departments = Department::whereIn('id', $department_ids)
             ->orderBy('nama_department', 'ASC')
             ->get();
-
-
-
-        // $this->departments = Department::orderBy('nama_department', 'ASC')->get();
     }
-    // public function updatedSelectedDepartemen()
-    // {
-    //     $this->selected_company = 0;
-    //     $this->selected_placement = 0;
-    // }
 
-    // public function updatedYear()
-    // {
+    public function updatedSelectedPlacement2()
+    {
+        $this->placement2s = Placement2::orderBy('nama_placement', 'ASC')->get();
 
+        $payroll = Payroll::where('placement_id', $this->selected_placement2)
+            ->whereMonth('date', $this->month)
+            ->whereYear('date', $this->year);
 
-    //     $this->bulan(); 
-    // }
+        $this->companies = Company::whereIn(
+            'id',
+            (clone $payroll)->distinct()->pluck('company_id')
+        )
+            ->orderBy('company_name')
+            ->get();
 
-    // public function bulan()
-    // {
-    //     $this->year ??= now()->year;
+        $this->departments = Department::whereIn(
+            'id',
+            (clone $payroll)->distinct()->pluck('department_id')
+        )
+            ->orderBy('nama_department')
+            ->get();
 
-    //     $payrollTerakhir = Payroll::latest('date')->first();
+        $this->placements = Placement::whereIn(
+            'id',
+            (clone $payroll)->whereNotNull('placement2_id')->distinct()->pluck('placement2_id')
+        )
+            ->orderBy('placement_name')
+            ->get();
 
-    //     $this->select_month = Payroll::select(DB::raw('MONTH(date) as month'))
-    //         ->whereYear('date', $this->year)
-    //         ->distinct()
-    //         ->pluck('month')
-    //         ->filter() // Filter null jika ada
-    //         ->toArray();
+        $this->selected_placement = 0;
+    }
 
-    //     // Jika null tetap aman
-    //     $this->select_month = $this->select_month ?? [];
-
-    //     if ($payrollTerakhir &&  $this->year == now()->year) {
-
-    //         $tanggalTerakhir = Carbon::parse($payrollTerakhir->date);
-    //         $tanggalSekarang = Carbon::now();
-
-    //         $selisihBulan = $tanggalSekarang->diffInMonths($tanggalTerakhir);
-    //         if ($selisihBulan == 2) {
-    //             $bulanSetelah = $tanggalTerakhir->copy()->addMonth();
-    //             $bulanTambahan = (int) $bulanSetelah->format('m');
-
-    //             if (!in_array($bulanTambahan, $this->select_month)) {
-    //                 $this->select_month[] = $bulanTambahan;
-    //             }
-    //         }
-    //     }
-    // }
 
     private function applyCommonFilters($query)
     {
         return $query
             ->when($this->selected_company != 0, fn($q) => $q->where('company_id', $this->selected_company))
             ->when($this->selected_placement != 0, fn($q) => $q->where('placement_id', $this->selected_placement))
+            ->when($this->selected_placement2 != 0, fn($q) => $q->where('placement2_id', $this->selected_placement2))
             ->when($this->selected_departemen != 0, fn($q) => $q->where('department_id', $this->selected_departemen))
             ->whereMonth('date', $this->month)
             ->whereYear('date', $this->year);
@@ -601,11 +575,7 @@ class Payrollwr extends Component
 
         $this->cx++;
 
-        // $this->select_year = Payroll::select(DB::raw('YEAR(date) as year'))
-        //     ->distinct()
-        //     ->pluck('year')
-        //     ->toArray();
-        // ooo
+
 
         $months = Payroll::select(DB::raw('MONTH(date) as month'))
             ->whereYear('date', $this->year)
@@ -614,12 +584,7 @@ class Payrollwr extends Component
             ->pluck('month')
             ->toArray();
 
-        // $data_bulan_ini = Yfrekappresensi::whereYear('date', now()->year)
-        //     ->whereMonth('date', now()->month)->count();
 
-        // if ($data_bulan_ini > 0) {
-        //     $months[] = $this->month;
-        // }
 
 
         if ($this->status == 1) {
@@ -639,122 +604,7 @@ class Payrollwr extends Component
         )->orderBy($this->columnName, $this->direction)
             ->paginate($this->perpage);
 
-        // $this->payroll_data = $payroll;
-        // $this->total_data = $total;
 
-        // $total = Payroll::whereIn('status_karyawan', $statuses)
-        //     ->when($this->selected_company != 0, fn($q) => $q->where('company_id', $this->selected_company))
-        //     ->when($this->selected_placement != 0, fn($q) => $q->where('placement_id', $this->selected_placement))
-        //     ->when($this->selected_departemen != 0, fn($q) => $q->where('department_id', $this->selected_departemen))
-        //     ->whereMonth('date', $this->month)
-        //     ->whereYear('date', $this->year)
-        //     ->sum('total');
-
-        // $payroll = $this->getPayrollQuery($statuses, $this->search)
-        //     ->when($this->selected_company != 0, fn($q) => $q->where('company_id', $this->selected_company))
-        //     ->when($this->selected_placement != 0, fn($q) => $q->where('placement_id', $this->selected_placement))
-        //     ->when($this->selected_departemen != 0, fn($q) => $q->where('department_id', $this->selected_departemen))
-        //     ->whereMonth('date', $this->month)
-        //     ->whereYear('date', $this->year)
-        //     ->orderBy($this->columnName, $this->direction)
-        //     ->paginate($this->perpage);
-
-        // $total = Payroll::whereIn('status_karyawan', $statuses)
-        //     ->where('company_id', $this->selected_company)
-        //     ->where('placement_id', $this->selected_placement)
-        //     ->where('department_id', $this->selected_departemen)
-        //     ->whereMonth('date', $this->month)
-        //     ->whereYear('date', $this->year)
-        //     ->sum('total');
-
-        // $payroll = $this->getPayrollQuery($statuses, $this->search)
-        //     ->where('company_id', $this->selected_company)
-        //     ->where('placement_id', $this->selected_placement)
-        //     ->where('department_id', $this->selected_departemen)
-        //     ->whereMonth('date', $this->month)
-        //     ->whereYear('date', $this->year)
-        //     ->orderBy($this->columnName, $this->direction)
-        //     ->paginate($this->perpage);
-
-        // if ($this->selected_placement == 0 && $this->selected_departemen == 0) {
-        //     if ($this->selected_company == 0) {
-        //         $total = Payroll::whereIn('status_karyawan', $statuses)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->sum('total');
-
-        //         $payroll = $this->getPayrollQuery($statuses, $this->search)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->orderBy($this->columnName, $this->direction)
-        //             ->paginate($this->perpage);
-        //     } else {
-        //         $total = Payroll::whereIn('status_karyawan', $statuses)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->where('company_id', $this->selected_company)
-        //             ->sum('total');
-
-        //         $payroll = $this->getPayrollQuery($statuses, $this->search, '', $this->selected_company)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->orderBy($this->columnName, $this->direction)
-        //             ->paginate($this->perpage);
-        //     }
-        // } elseif ($this->selected_company == 0 && $this->selected_departemen == 0) {
-        //     if ($this->selected_placement == 0) {
-        //         $total = Payroll::whereIn('status_karyawan', $statuses)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->sum('total');
-
-        //         $payroll = $this->getPayrollQuery($statuses, $this->search)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->orderBy($this->columnName, $this->direction)
-        //             ->paginate($this->perpage);
-        //     } else {
-        //         $total = Payroll::whereIn('status_karyawan', $statuses)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->where('placement_id', $this->selected_placement)
-        //             ->sum('total');
-
-        //         $payroll = $this->getPayrollQuery($statuses, $this->search, $this->selected_placement, '', '')
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->orderBy($this->columnName, $this->direction)
-        //             ->paginate($this->perpage);
-        //     }
-        // } else {
-        //     if ($this->selected_departemen == 0) {
-        //         $total = Payroll::whereIn('status_karyawan', $statuses)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->sum('total');
-
-        //         $payroll = $this->getPayrollQuery($statuses, $this->search)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->orderBy($this->columnName, $this->direction)
-        //             ->paginate($this->perpage);
-        //     } else {
-
-
-        //         $total = Payroll::whereIn('status_karyawan', $statuses)
-        //             ->where('department_id', $this->selected_departemen)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->sum('total');
-        //         $payroll = $this->getPayrollQuery($statuses, $this->search, '', '', $this->selected_departemen)
-
-        //             ->where('department_id', $this->selected_departemen)
-        //             ->whereMonth('date', $this->month)
-        //             ->whereYear('date', $this->year)
-        //             ->orderBy($this->columnName, $this->direction)
-        //             ->paginate($this->perpage);
-        //     }
-        // }
 
         $tgl = Payroll::whereMonth('date', $this->month)
             ->whereYear('date', $this->year)
@@ -779,24 +629,7 @@ class Payrollwr extends Component
             'total' => $total,
             'last_build' => $last_build,
             'data_kosong' => $data_kosong,
-            // 'data_bulan_ini' => $data_bulan_ini,
-            // 'companies' => $this->companies,
-            // 'departments' => $this->departments,
-            // 'placements' => $this->placements,
+
         ]);
-
-
-        // return view('livewire.payrollwr', compact([
-        //     'payroll',
-        //     'total',
-        //     'last_build',
-        //     'data_kosong',
-        //     // 'data_bulan_ini',
-        //     'companies',
-        //     'departments',
-        //     'placements',
-        // ]));
-
-
     }
 }

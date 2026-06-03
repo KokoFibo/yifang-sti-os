@@ -22,15 +22,16 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
 
     protected $data;
 
-    protected $columnName, $direction, $search,  $selected_company, $selected_placement, $selected_departemen, $status, $month, $year;
+    protected $columnName, $direction, $search,  $selected_company, $selected_placement, $selected_departemen, $status, $month, $year, $selected_placement2;
 
-    public function __construct($columnName, $direction, $search,  $selected_company, $selected_placement, $selected_departemen, $status, $month, $year)
+    public function __construct($columnName, $direction, $search,  $selected_company, $selected_placement, $selected_departemen, $status, $month, $year, $selected_placement2)
     {
         $this->columnName = $columnName;
         $this->direction = $direction;
         $this->search = $search;
         $this->selected_company = $selected_company;
         $this->selected_placement = $selected_placement;
+        $this->selected_placement2 = $selected_placement2;
         $this->selected_departemen = $selected_departemen;
         $this->status = $status;
         $this->month = $month;
@@ -55,7 +56,7 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
         ];
     }
 
-    public function getPayrollQuery($statuses, $search = null, $placement_id = null, $company_id = null, $department_id = null)
+    public function getPayrollQuery($statuses, $search = null, $placement_id = null, $company_id = null, $department_id = null, $placement2_id = null)
     {
         return Payroll::query()
 
@@ -68,11 +69,15 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
                     ->orWhere('jabatan_id', 'LIKE', '%' . trim($search) . '%')
                     ->orWhere('company_id', 'LIKE', '%' . trim($search) . '%')
                     ->orWhere('department_id', 'LIKE', '%' . trim($search) . '%')
+                    ->orWhere('placement2_id', 'LIKE', '%' . trim($search) . '%')
                     ->orWhere('metode_penggajian', 'LIKE', '%' . trim($search) . '%')
                     ->orWhere('status_karyawan', 'LIKE', '%' . trim($search) . '%');
             })
             ->when($placement_id, function ($query) use ($placement_id) {
                 $query->where('placement_id', $placement_id);
+            })
+            ->when($placement2_id, function ($query) use ($placement2_id) {
+                $query->where('placement2_id', $placement2_id);
             })
             ->when($company_id, function ($query) use ($company_id) {
                 $query->where('company_id', $company_id);
@@ -89,6 +94,7 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
         return $query
             ->when($this->selected_company != 0, fn($q) => $q->where('company_id', $this->selected_company))
             ->when($this->selected_placement != 0, fn($q) => $q->where('placement_id', $this->selected_placement))
+            ->when($this->selected_placement2 != 0, fn($q) => $q->where('placement2_id', $this->selected_placement2))
             ->when($this->selected_departemen != 0, fn($q) => $q->where('department_id', $this->selected_departemen))
             ->whereMonth('date', $this->month)
             ->whereYear('date', $this->year);
@@ -109,7 +115,7 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
         // )->sum('total');
 
         $payroll = $this->applyCommonFilters(
-            $this->getPayrollQuery($statuses, $this->search)
+            $this->getPayrollQuery($statuses, $this->search, $this->selected_placement, $this->selected_company, $this->selected_departemen, $this->selected_placement2)
         )->orderBy($this->columnName, $this->direction)
             ->get();
 
@@ -128,6 +134,13 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
                 $nama_directorate = 'All Directorates';
             } else {
                 $nama_directorate = 'Directorate: ' . nama_placement($this->selected_placement) . ', ';
+            }
+        }
+        if ($this->selected_placement2 != 0) {
+            if ($this->selected_placement2 == 0) {
+                $nama_placement2 = 'All Placements';
+            } else {
+                $nama_placement2 = 'Placement: ' . nama_placement2($this->selected_placement2) . ', ';
             }
         }
         if ($this->selected_departemen != 0) {
@@ -163,6 +176,7 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
             'header_text' => $header_text,
             'search' => $this->search,
             'nama_directorate' => nama_placement($this->selected_placement),
+            'nama_placement2' => nama_placement2($this->selected_placement2),
             'nama_company' => nama_company($this->selected_company),
             'nama_departement' => nama_department($this->selected_departemen)
         ]);
@@ -207,7 +221,8 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
             'AQ' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
             // 'AR' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
             'AS' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
-            'AT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED
+            'AT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
+            'AU' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED
 
         ];
     }
