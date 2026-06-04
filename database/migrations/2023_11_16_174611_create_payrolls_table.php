@@ -77,6 +77,8 @@ return new class extends Migration
             $table->integer('pph21')->nullable();
             $table->integer('total_bpjs')->nullable();
             $table->integer('gaji_bulan_ini')->nullable();
+            $table->foreignId('placement2_id')->nullable();
+
 
 
             $table->timestamps();
