@@ -8,6 +8,7 @@ use App\Models\Jabatan;
 use Livewire\Component;
 use App\Models\Karyawan;
 use App\Models\Placement;
+use App\Models\Placement2;
 use App\Models\Harikhusus;
 use Livewire\WithPagination;
 use App\Models\Yfrekappresensi;
@@ -28,6 +29,7 @@ class Newpresensi extends Component
     public $sortDirection = 'desc';
     public $search = '';
     public $placementFilter = '';
+    public $placement2Filter = '';
     public $jabatanFilter = '';
     public $noScan = 0;
     public $totalNoScan = 0;
@@ -56,7 +58,7 @@ class Newpresensi extends Component
     public $show_name, $show_id, $delete_id;
     public $total_hari_kerja_libur;
 
-    public $placements, $jabatans, $bulan_terakhir;
+    public $placements, $jabatans, $bulan_terakhir, $placement2s;
 
     public function delete_no_scan()
     {
@@ -107,6 +109,17 @@ class Newpresensi extends Component
             ->orderBy('placements.placement_name')
             ->get();
 
+        $this->placement2s = DB::table('placement2s')
+            ->select('placement2s.id', 'placement2s.nama_placement')
+            ->join('karyawans', 'karyawans.placement2_id', '=', 'placement2s.id')
+            ->join('yfrekappresensis', 'yfrekappresensis.user_id', '=', 'karyawans.id_karyawan')
+            ->whereMonth('yfrekappresensis.date', $this->month)
+            ->whereYear('yfrekappresensis.date', $this->year)
+            ->groupBy('placement2s.id', 'placement2s.nama_placement')
+            ->orderBy('placement2s.nama_placement')
+            ->get();
+
+
         $this->jabatans = DB::table('jabatans')
             ->select('jabatans.id', 'jabatans.nama_jabatan')
             ->join('karyawans', 'karyawans.jabatan_id', '=', 'jabatans.id')
@@ -115,25 +128,15 @@ class Newpresensi extends Component
             ->when($this->placementFilter && $this->placementFilter !== '', function ($query) {
                 $query->where('karyawans.placement_id', $this->placementFilter);
             })
+
+            ->when($this->placement2Filter && $this->placement2Filter !== '', function ($query) {
+                $query->where('karyawans.placement2_id', $this->placement2Filter);
+            })
             ->whereMonth('yfrekappresensis.date', $this->month)
             ->whereYear('yfrekappresensis.date', $this->year)
             ->groupBy('jabatans.id', 'jabatans.nama_jabatan')
             ->orderBy('jabatans.nama_jabatan')
             ->get();
-
-
-
-        // Dropdown jabatan berdasarkan placement (tanpa kolom placement_id)
-        // $this->jabatans = Jabatan::whereIn('id', function ($q) {
-        //     $q->select('jabatan_id')
-        //         ->from('karyawans')
-        //         ->when($this->placementFilter, function ($sub) {
-        //             $sub->where('placement_id', $this->placementFilter);
-        //         })
-        //         ->whereNotNull('jabatan_id');
-        // })
-        //     ->orderBy('nama_jabatan')
-        //     ->get();
     }
 
 
@@ -689,6 +692,13 @@ class Newpresensi extends Component
 
     public function updatingPlacementFilter()
     {
+
+        $this->jabatanFilter = ''; // reset jabatan jika placement berubah
+        $this->resetPage();
+    }
+    // public function updatingPlacementFilter2()
+    public function updatedPlacement2Filter()
+    {
         $this->jabatanFilter = ''; // reset jabatan jika placement berubah
         $this->resetPage();
     }
@@ -709,6 +719,7 @@ class Newpresensi extends Component
                     'karyawans.nama',
                     'karyawans.metode_penggajian',
                     'karyawans.placement_id',
+                    'karyawans.placement2_id',
                     'karyawans.jabatan_id'
                 );
 
@@ -738,9 +749,13 @@ class Newpresensi extends Component
                 });
             }
 
-            // 🏢 Filter placement
+            // 🏢 Filter placement directorate
             if (!empty($this->placementFilter)) {
                 $query->where('karyawans.placement_id', $this->placementFilter);
+            }
+            // 🏢 Filter placement2
+            if (!empty($this->placement2Filter)) {
+                $query->where('karyawans.placement2_id', $this->placement2Filter);
             }
 
             // 👔 Filter jabatan
@@ -757,6 +772,7 @@ class Newpresensi extends Component
                     'karyawans.nama',
                     'karyawans.metode_penggajian',
                     'karyawans.placement_id',
+                    'karyawans.placement2_id',
                     'karyawans.jabatan_id'
                 )
                 ->whereMonth('yfrekappresensis.date', Carbon::parse($this->tanggal)->month)
@@ -778,6 +794,7 @@ class Newpresensi extends Component
                     'karyawans.nama',
                     'karyawans.metode_penggajian',
                     'karyawans.placement_id',
+                    'karyawans.placement2_id',
                     'karyawans.jabatan_id'
                 )
                 ->whereMonth('yfrekappresensis.date', Carbon::parse($this->tanggal)->month)
@@ -788,6 +805,7 @@ class Newpresensi extends Component
         }
         $this->is_presensi_locked = $this->check_presensi_locked();
         $this->checkData();
+        // dd('datas', $datas[0]);
         return view('livewire.newpresensi', [
             'datas' => $datas,
 
