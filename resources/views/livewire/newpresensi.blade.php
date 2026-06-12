@@ -2,7 +2,7 @@
     <div class="card shadow-sm">
         <div class="card-header {{ $is_hari_libur_nasional || $is_sunday ? 'bg-success text-light' : '' }} ">
             <h4 class="fs-5">
-                Data Presensi
+                Data Presensi {{ $placementFilter }} {{ $placement2Filter }}
             </h4>
             <h5 class="fs-6">
                 {{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d M Y') }}
@@ -48,12 +48,21 @@
                 <input type="text" wire:model.debounce.500ms.live="search" placeholder="Cari nama / user ID"
                     class="form-control form-control-sm" style="width: 200px;" />
 
-                <!-- 🏢 Filter Placement -->
+                <!-- 🏢 Filter Directorate/PLacement -->
                 <select wire:model.live="placementFilter" wire:change="reload_placement_jabatan"
                     class="form-select form-select-sm" style="width: 180px;">
                     <option value="">Semua Directorate</option>
                     @foreach ($placements as $p)
                         <option value="{{ $p->id }}">{{ $p->placement_name }}</option>
+                    @endforeach
+                </select>
+
+                <!-- 🏢 Filter Placement2 -->
+                <select wire:model.live="placement2Filter" wire:change="reload_placement_jabatan"
+                    class="form-select form-select-sm" style="width: 180px;">
+                    <option value="">Semua Placement</option>
+                    @foreach ($placement2s as $p)
+                        <option value="{{ $p->id }}">{{ $p->nama_placement }}</option>
                     @endforeach
                 </select>
 
@@ -158,6 +167,16 @@
                             <th wire:click="sortBy('placement_id')" style="cursor:pointer;">
                                 Directorate
                                 @if ($sortField === 'placement_id')
+                                    @if ($sortDirection === 'asc')
+                                        <i class="bi bi-arrow-up"></i>
+                                    @else
+                                        <i class="bi bi-arrow-down"></i>
+                                    @endif
+                                @endif
+                            </th>
+                            <th wire:click="sortBy('placement2_id')" style="cursor:pointer;">
+                                Placement
+                                @if ($sortField === 'placement2_id')
                                     @if ($sortDirection === 'asc')
                                         <i class="bi bi-arrow-up"></i>
                                     @else
@@ -386,6 +405,8 @@
                                 <td>{{ \Carbon\Carbon::parse($data->date)->format('d M') }}</td>
                                 <td>{{ $data->metode_penggajian }}</td>
                                 <td>{{ nama_placement($data->placement_id ?? '-') }}</td>
+                                <td>{{ nama_placement2($data->placement2_id ?? '-') }}</td>
+                                {{-- <td>{{ $data->placement2_id }}</td> --}}
                                 <td>{{ nama_jabatan($data->jabatan_id ?? '-') }}</td>
 
                                 <td>{{ $data->first_in ? \Carbon\Carbon::parse($data->first_in)->format('H:i') : '-' }}
