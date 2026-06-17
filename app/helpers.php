@@ -272,6 +272,7 @@ function saveDetail($user_id, $first_in, $first_out, $second_in, $second_out, $l
         $terlambat = late_check_jam_kerja_only($first_in, $first_out, $second_in, $second_out, $shift, $date, $jabatan_id, get_placement($user_id));
 
         $langsungLembur = langsungLembur($second_out, $date, $shift, $jabatan_id, $placement_id);
+
         // if ($is_sunday) {
         // $jam_lembur = hitungLembur($overtime_in, $overtime_out) / 60 * 2
         // + $langsungLembur * 2;
@@ -279,7 +280,6 @@ function saveDetail($user_id, $first_in, $first_out, $second_in, $second_out, $l
         // $jam_lembur = hitungLembur($overtime_in, $overtime_out) / 60 + $langsungLembur;
         // }
         $jam_lembur = hitungLembur($overtime_in, $overtime_out) / 60 + $langsungLembur;
-
         if ($shift == 'Malam') {
             if ($is_saturday) {
                 if ($jam_kerja >= 6) {
@@ -325,22 +325,7 @@ function saveDetail($user_id, $first_in, $first_out, $second_in, $second_out, $l
         }
 
 
-        // if ($jabatan_id != 23) {
-        //     if (
-        //         $is_libur_nasional && !$is_sunday
-        //         && $jabatan_id != 23
 
-        //     ) {
-
-        //         $jam_kerja *= 2;
-        //         $jam_lembur *= 2;
-        //     }
-        // } else {
-        //     if ($is_sunday) {
-        //         $jam_kerja /= 2;
-        //         $jam_lembur /= 2;
-        //     }
-        // }
 
         // 23 translator
         if ($jabatan_id == 23) {
@@ -351,13 +336,7 @@ function saveDetail($user_id, $first_in, $first_out, $second_in, $second_out, $l
         }
 
 
-        // $this->dataArr->push([
-        // 'tgl' => $tgl,
-        // 'jam_kerja' => $jam_kerja,
-        // 'terlambat' => $terlambat,
-        // 'jam_lembur' => $jam_lembur,
-        // 'tambahan_shift_malam' => $tambahan_shift_malam,
-        // ]);
+
         if ($terlambat > 0) $tambahan_shift_malam = 0;
         return [
             'tgl' => $tgl,
@@ -1973,7 +1952,6 @@ function is_lock()
 }
 function langsungLembur($second_out, $tgl, $shift, $jabatan, $placement_id)
 {
-
     $is_saturday = is_saturday($tgl);
 
     $data = cek_hari_khusus($tgl);
@@ -1985,6 +1963,7 @@ function langsungLembur($second_out, $tgl, $shift, $jabatan, $placement_id)
 
     // betulin
     if ($second_out != null) {
+
         $t2 = strtotime($second_out);
         if (!$is_saturday && $shift == 'Pagi' && $t2 < strtotime('04:00:00')) {
             $diff = Carbon::parse(pembulatanJamOvertimeOut($second_out))->diffInMinutes(Carbon::parse('00:00:00')) / 60;
@@ -2125,6 +2104,7 @@ function langsungLembur($second_out, $tgl, $shift, $jabatan, $placement_id)
             return $lembur = 0;
         }
     } else {
+
         if ($second_out != null) {
 
             $lembur = 0;
@@ -2183,16 +2163,19 @@ function langsungLembur($second_out, $tgl, $shift, $jabatan, $placement_id)
             } else {
                 if ($shift == 'Pagi') {
                     // Shift Pagi
+
                     if ($is_saturday) {
+
                         // if ($tgl == '2025-09-05') {
                         if ($tgl == $tgl_khusus) {
                             // rubah disini jika ada perubahan jam lembur
                             // ini perhitungan utk hari 08:00 - 15:30
                             // di hitung hari 6 jam, untuk lembur mulai 15:30
-                            if ($t2 < strtotime('16:00:00')) {
+
+                            if ($t2 < strtotime('15:30:00')) {
                                 return $lembur = 0;
                             }
-                            $diff = Carbon::parse(pembulatanJamOvertimeOut($second_out))->diffInMinutes(Carbon::parse('15:30:00')) / 60;
+                            $diff = Carbon::parse(pembulatanJamOvertimeOut($second_out))->diffInMinutes(Carbon::parse('15:00:00')) / 60;
                         } else {
                             if ($t2 < strtotime('15:30:00')) {
                                 return $lembur = 0;
