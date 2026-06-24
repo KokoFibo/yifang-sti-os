@@ -756,6 +756,7 @@ class YfpresensiController extends Controller
             $hasil = saveDetail($user_id, $first_in, $first_out, $second_in, $second_out, $late, $shift, $tgl, $dataKaryawan->jabatan_id, $no_scan, $dataKaryawan->placement_id, $overtime_in, $overtime_out);
             // dd($hasil['jam_kerja']);
 
+
             $total_hari_kerja = 0;
             $total_jam_kerja = 0;
             $total_jam_lembur = 0;

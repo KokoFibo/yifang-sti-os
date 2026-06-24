@@ -462,6 +462,9 @@ class Newpresensi extends Component
         $hasil = saveDetail($data->user_id, $data->first_in, $data->first_out, $data->second_in, $data->second_out, $data->late, $data->shift, $data->date, $dataKaryawan->jabatan_id, $data->no_scan, $dataKaryawan->placement_id, $data->overtime_in, $data->overtime_out);
         // dd($hasil['jam_kerja']);
         // if ($data->user_id == 2152) dd($data->user_id, $hasil['jam_kerja']);
+        // if ($data->user_id == 11604) {
+        //     dd($hasil['jam_kerja'], $hasil['terlambat']);
+        // }
         $data->total_hari_kerja = 0;
         $data->total_jam_kerja = 0;
         $data->total_jam_lembur = 0;
