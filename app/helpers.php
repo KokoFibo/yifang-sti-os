@@ -272,13 +272,10 @@ function saveDetail($user_id, $first_in, $first_out, $second_in, $second_out, $l
         $terlambat = late_check_jam_kerja_only($first_in, $first_out, $second_in, $second_out, $shift, $date, $jabatan_id, get_placement($user_id));
 
         $langsungLembur = langsungLembur($second_out, $date, $shift, $jabatan_id, $placement_id);
-
-        // if ($is_sunday) {
-        // $jam_lembur = hitungLembur($overtime_in, $overtime_out) / 60 * 2
-        // + $langsungLembur * 2;
-        // } else {
-        // $jam_lembur = hitungLembur($overtime_in, $overtime_out) / 60 + $langsungLembur;
+        // if ($user_id == 11604) {
+        //     dd($jam_kerja, $langsungLembur, $terlambat);
         // }
+
         $jam_lembur = hitungLembur($overtime_in, $overtime_out) / 60 + $langsungLembur;
         if ($shift == 'Malam') {
             if ($is_saturday) {
@@ -2219,6 +2216,8 @@ function tgl_doang($tgl)
 
 function hitung_jam_kerja($first_in, $first_out, $second_in, $second_out, $late, $shift, $tgl, $jabatan, $placement_id)
 {
+    // dd($total_late);
+
     $perJam = 60;
     $is_saturday = is_saturday($tgl);
     $is_sunday = is_sunday($tgl);
@@ -2284,7 +2283,9 @@ function hitung_jam_kerja($first_in, $first_out, $second_in, $second_out, $late,
             }
         }
     } else {
-        if ($late == null) {
+        // if ($late == null) {
+        if ($late == null && !(($second_in === null && $second_out === null) || ($first_in === null && $first_out === null))) {
+
             if ($shift == 'Pagi') {
                 if ($is_saturday) {
                     $jam_kerja = 6;
@@ -2306,6 +2307,9 @@ function hitung_jam_kerja($first_in, $first_out, $second_in, $second_out, $late,
             $total_late = late_check_jam_kerja_only($first_in, $first_out, $second_in, $second_out, $shift, $tgl, $jabatan, $placement_id);
             //    dd($first_in, $first_out, $second_in, $second_out);
             //jok
+            // if ($data->user_id == 11604) {
+            //     dd($hasil['jam_kerja'], $hasil['terlambat']);
+            // }
             if ($second_in === null && $second_out === null && ($first_in === null && $first_out === null)) {
                 $jam_kerja = 0;
             } elseif (($second_in === null && $second_out === null) || ($first_in === null && $first_out === null)) {

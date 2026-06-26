@@ -16,6 +16,7 @@ use App\Rules\AllowedFileExtension;
 use App\Rules\FileSizeLimit;
 use Google\Service\YouTube\ThirdPartyLinkStatus;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\RequiredIf;
 use Intervention\Image\ImageManager;
@@ -65,7 +66,70 @@ class Updatekaryawanwr extends Component
     public $nama_awal;
     public $outsource_awal;
 
+    public function syncApplicantFiles($id_karyawan)
+    {
+        $urls = [
+            'https://salary.yifang.co.id',
+            'https://payroll.yifang.co.id',
+        ];
 
+        $files = null;
+
+        foreach ($urls as $url) {
+
+            $response = Http::timeout(30)
+                ->get($url . "/api/applicant-files/{$id_karyawan}");
+
+            if ($response->successful()) {
+
+                $data = $response->json();
+
+                if (
+                    isset($data['success']) &&
+                    $data['success'] &&
+                    !empty($data['data'])
+                ) {
+                    $files = $data['data'];
+                    break;
+                }
+            }
+        }
+
+        if ($files === null) {
+
+            $this->dispatch(
+                'message',
+                type: 'error',
+                title: 'Data tidak ditemukan pada Salary maupun Payroll.'
+            );
+
+            return;
+        }
+
+        foreach ($files as $file) {
+
+            Applicantfile::updateOrCreate(
+                [
+                    'id_karyawan' => $file['id_karyawan'],
+                    'filename' => $file['filename'],
+                ],
+                [
+                    'originalName' => $file['originalName'],
+                ]
+            );
+        }
+
+        $this->dispatch(
+            'message',
+            type: 'success',
+            title: 'Data berhasil import (' . count($files) . ' dokumen).',
+        );
+        return $this->redirect('/karyawanupdate/' . $this->id);
+
+
+        // Refresh komponen jika diperlukan
+        $this->render();
+    }
 
 
 
