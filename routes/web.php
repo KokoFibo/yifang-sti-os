@@ -45,6 +45,7 @@ use App\Livewire\Deletepresensiwr;
 use App\Livewire\Departmentwr;
 use App\Livewire\Developer;
 use App\Livewire\DeveloperDashboard;
+use App\Livewire\Directinject;
 use App\Livewire\Editpresensiwr;
 use App\Livewire\Excelpresensi;
 use App\Livewire\Gajibpjs;
@@ -359,6 +360,8 @@ Route::middleware(['auth'])->group(function () {
 
                             Route::get('/placementsti', Placementsti::class);
                             Route::get('/delete-monthly-presensi', DeleteMonthlyPresensi::class);
+                            Route::get('/direct-inject-presensi', Directinject::class);
+
 
 
 
