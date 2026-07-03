@@ -64,32 +64,11 @@ class Test extends Component
 
   public function render()
   {
+    $data = User::whereIn('role', ['0', '1'])
+      ->where('username', '!=', '100000')
+      ->delete();
 
-    // $datas = Karyawan::where('company_id', 101)
-    //   ->get();
-    // foreach ($datas as $data) {
-    //   $data->outsource = false;
-    //   $data->save();
-    // }
-    dd('aman');
-
-    Karyawan::query()->update([
-      'outsource' => true
-    ]);
-
-    Karyawan::where('company_id', 101)
-      ->update([
-        'outsource' => false
-      ]);
-
-    $datas = Karyawan::where('company_id', 101)
-      ->get();
-
-    dd($datas);
-
-    $data = Karyawan::whereNotIn('status_karyawan', ['Blacklist', 'Resigned'])
-      ->where('gaji_pokok', '<', 2200000)
-      ->paginate(10);
+    dd($data);
 
     return view('livewire.test', [
       'data' => $data
