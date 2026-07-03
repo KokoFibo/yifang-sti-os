@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class Salaryadjustaja extends Component
 {
-    public $bulan = '2026-01';
+    public $bulan = '2025-11';
     public $listBulan = [];
 
     public function mount()
@@ -16,7 +16,7 @@ class Salaryadjustaja extends Component
         $this->listBulan = Karyawan::selectRaw("
                 DATE_FORMAT(tanggal_bergabung,'%Y-%m') as bulan
             ")
-            ->whereBetween('tanggal_bergabung', ['2026-01-01', '2026-03-31'])
+            ->whereBetween('tanggal_bergabung', ['2025-11-01', '2026-03-31'])
             ->distinct()
             ->orderBy('bulan')
             ->pluck('bulan')
