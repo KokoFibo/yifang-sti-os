@@ -548,6 +548,15 @@ WHEN p.total_noscan <= 3 THEN 0
                 ]);
         }
     });
+    $data = Payroll::whereMonth('date', $month)
+        ->whereYear('date', $year)
+        ->where('id_karyawan', '12921')
+        ->first();
+
+    if ($data) {
+        $data->total -= $data->pph21;
+        $data->save();
+    }
 }
 
 
