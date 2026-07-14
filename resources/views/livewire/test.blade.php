@@ -1,49 +1,139 @@
-<div class="p-4">
-    <div class="bg-white rounded-2xl shadow p-4">
+<div class="container-fluid py-3">
 
-        <h2 class="text-lg font-semibold mb-4">Data Karyawan</h2>
+    <div class="card shadow-sm">
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm text-left border border-gray-200 rounded-xl overflow-hidden">
-                <thead class="bg-gray-100 text-gray-700">
-                    <tr>
-                        <th class="px-4 py-2 border">No</th>
-                        <th class="px-4 py-2 border">Nama</th>
-                        <th class="px-4 py-2 border">Status</th>
-                        <th class="px-4 py-2 border">Gaji Pokok</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($data as $index => $item)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 py-2 border">
-                                {{ $data->firstItem() + $index }}
-                            </td>
-                            <td class="px-4 py-2 border">
-                                {{ $item->nama ?? '-' }}
-                            </td>
-                            <td class="px-4 py-2 border">
-                                {{ $item->status_karyawan }}
-                            </td>
-                            <td class="px-4 py-2 border">
-                                Rp {{ number_format($item->gaji_pokok, 0, ',', '.') }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-gray-500">
-                                Data tidak ditemukan
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <div class="card-header bg-primary text-white">
+
+            <div class="row align-items-center">
+
+                <div class="col-md-8">
+
+                    <h4 class="mb-1">
+                        Penyesuaian Gaji Karyawan
+                    </h4>
+
+                    <small>
+                        Gaji ≤ Rp 2.300.000 akan diubah menjadi Rp 2.400.000
+                    </small>
+
+                </div>
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    <button class="btn btn-warning fw-bold" wire:click="updateGaji"
+                        wire:confirm="Yakin ingin mengubah seluruh gaji menjadi Rp 2.400.000 ?"
+                        wire:loading.attr="disabled">
+
+                        <span wire:loading.remove>
+                            Sesuaikan ke Rp 2.400.000
+                        </span>
+
+                        <span wire:loading>
+                            Memproses...
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </div>
+
         </div>
 
-        {{-- Pagination --}}
-        <div class="mt-4">
-            {{ $data->links() }}
+        <div class="card-body">
+
+            @if (session()->has('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="row mb-3">
+
+                <div class="col-md-6">
+
+                    <div class="alert alert-info mb-0">
+
+                        <strong>Total Karyawan :</strong>
+
+                        <span class="badge bg-danger">
+                            {{ $data->count() }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="table-responsive">
+
+                <table class="table table-striped table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+                            <th>No</th>
+                            <th>NIK</th>
+                            <th>Nama</th>
+                            <th>Status</th>
+                            <th class="text-end">Gaji</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($data as $item)
+                            <tr>
+
+                                <td>{{ $loop->iteration }}</td>
+
+                                <td>{{ $item->nik }}</td>
+
+                                <td>{{ $item->nama }}</td>
+
+                                <td>
+
+                                    <span class="badge bg-primary">
+                                        {{ $item->status_karyawan }}
+                                    </span>
+
+                                </td>
+
+                                <td class="text-end">
+
+                                    <strong class="text-danger">
+
+                                        Rp {{ number_format($item->gaji_pokok, 0, ',', '.') }}
+
+                                    </strong>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td colspan="5" class="text-center py-5">
+
+                                    Tidak ada data.
+
+                                </td>
+
+                            </tr>
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
         </div>
 
     </div>
+
 </div>
