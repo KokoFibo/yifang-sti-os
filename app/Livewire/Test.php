@@ -62,11 +62,27 @@ class Test extends Component
     );
   }
 
+  public function updateGaji()
+  {
+    $updated = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT'])
+      ->where('gaji_pokok', '<=', 2300000)
+      ->update([
+        'gaji_pokok' => 2400000
+      ]);
+    dd("karyawan berhasil disesuaikan.");
+    // session()->flash('success', "{$updated} karyawan berhasil disesuaikan.");
+
+    // Tidak perlu refresh.
+    // Karena render() akan dipanggil ulang otomatis.
+  }
+
   public function render()
   {
+    $data = Karyawan::whereIn('status_karyawan', ['PKWT', 'PKWTT'])
+      ->where('gaji_pokok', '<=', 2300000)
+      ->get();
 
-
-    dd('aman');
+    // dd('aman');
 
     return view('livewire.test', [
       'data' => $data
