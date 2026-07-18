@@ -869,44 +869,39 @@ function check_di_karyawan($email)
     else return false;
 }
 
-function nama_department($id)
+function nama_department($id): string
 {
-    if ($id != null) {
-        $data = Department::find($id);
-        return $data->nama_department;
-    }
+    return empty($id)
+        ? '-'
+        : Department::whereKey($id)->value('nama_department') ?? '-';
 }
-function nama_company($id)
+function nama_company($id): string
 {
-    if ($id != null) {
-        $data = Company::find($id);
-        return $data->company_name;
-    }
+    return empty($id)
+        ? '-'
+        : Company::whereKey($id)->value('company_name') ?? '-';
 }
-function nama_placement($id)
+function nama_placement($id): string
 {
+    if (empty($id)) {
+        return '-';
+    }
 
-    if ($id != null) {
-        $data = Placement::find($id);
-        return $data->placement_name;
-    }
+    return Placement::whereKey($id)->value('placement_name') ?? '-';
 }
-function nama_placement2($id)
+function nama_placement2($id): string
 {
-
-    if ($id != null) {
-        $data = Placement2::find($id);
-        return $data->nama_placement;
-    }
+    return empty($id)
+        ? '-'
+        : Placement2::whereKey($id)->value('nama_placement') ?? '-';
 }
 
 
-function nama_jabatan($id)
+function nama_jabatan($id): string
 {
-    if ($id != null) {
-        $data = Jabatan::find($id);
-        return $data->nama_jabatan;
-    }
+    return empty($id)
+        ? '-'
+        : Jabatan::whereKey($id)->value('nama_jabatan') ?? '-';
 }
 
 function get_rate_ter_pph21($ptkp, $total_bpjs_company)
