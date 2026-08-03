@@ -133,6 +133,8 @@
                 <th style="text-align: center;">Total Hari Kerja</th>
                 <th style="text-align: center;">Total Jam Kerja (Bersih)</th>
                 <th style="text-align: center;">Total Jam Lembur</th>
+                <th style="text-align: center;">Total Jam Kerja Libur</th>
+                <th style="text-align: center;">Total Jam Lembur Libur</th>
                 <th style="text-align: center;">Jumlah Jam Terlambat</th>
                 <th style="text-align: center;">Tambahan Shift Malam</th>
                 <th style="text-align: center;">Gaji Pokok</th>
@@ -277,6 +279,8 @@
                     <td> {{ $d->hari_kerja }}</td>
                     <td> {{ $d->jam_kerja }}</td>
                     <td> {{ $d->jam_lembur }}</td>
+                    <td> {{ $d->jam_kerja_libur }}</td>
+                    <td> {{ $d->jam_lembur_libur }}</td>
                     <td> {{ $d->jumlah_jam_terlambat }}</td>
                     <td style="text-align: right"> {{ $d->tambahan_shift_malam }}</td>
                     <td style="text-align: right"> {{ $d->gaji_pokok }}</td>
