@@ -372,7 +372,7 @@
                     <div>
                         <select wire:model.live="selected_departemen" class="form-select pr-select-rounded"
                             aria-label="Default select example">
-                            <option value="0"selected>{{ __('All Department') }}</option>
+                            <option value="0"selected>{{ __('All Departments') }}</option>
 
                             @foreach ($departments as $d)
                                 <option value="{{ $d->id }}">{{ $d->nama_department }}</option>
