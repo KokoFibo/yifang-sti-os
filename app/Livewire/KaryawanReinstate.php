@@ -80,7 +80,6 @@ class KaryawanReinstate extends Component
         $data_baru->id_karyawan = $new_id;
         $data_baru->email = $email_lama;
         $data_baru->tanggal_resigned = null;
-
         $data_baru->save();
 
         // buat user baru di presensidb.
