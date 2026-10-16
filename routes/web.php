@@ -205,8 +205,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/kview', [KviewController::class, 'index']);
                 Route::get('/infokaryawan', Infokaryawan::class);
                 Route::get('/datatidaklengkap', Datatidaklengkap::class);
-                Route::get('/yfdeletetanggalpresensiwr', Yfdeletetanggalpresensiwr::class);
-                Route::get('/addpresensi', AddPresensi::class);
+
 
 
 
@@ -261,6 +260,8 @@ Route::middleware(['auth'])->group(function () {
 
                 //Khusus Senior Admin
                 Route::middleware(['SeniorAdmin'])->group(function () {
+                    Route::get('/yfdeletetanggalpresensiwr', Yfdeletetanggalpresensiwr::class);
+                    Route::get('/addpresensi', AddPresensi::class);
                     Route::get('/payroll', Payrollwr::class);
                     Route::get('getexcel', [TerControler::class, 'index']);
                     Route::post('upload/ter', [TerControler::class, 'upload']);
