@@ -205,6 +205,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/kview', [KviewController::class, 'index']);
                 Route::get('/infokaryawan', Infokaryawan::class);
                 Route::get('/datatidaklengkap', Datatidaklengkap::class);
+                Route::get('/yfdeletetanggalpresensiwr', Yfdeletetanggalpresensiwr::class);
+                Route::get('/addpresensi', AddPresensi::class);
 
 
 
@@ -285,7 +287,6 @@ Route::middleware(['auth'])->group(function () {
 
                     // KHUSUS Super Admin
                     Route::middleware(['SuperAdmin'])->group(function () {
-                        Route::get('/yfdeletetanggalpresensiwr', Yfdeletetanggalpresensiwr::class);
                         Route::get('/changeuserrolewr', Changeuserrolewr::class);
                         // PAYROLL
                         Route::get('/reportindex', [ReportController::class, 'index']);
@@ -333,7 +334,6 @@ Route::middleware(['auth'])->group(function () {
                             Route::get('/UpdatedPresensi', UpdatedPresensi::class);
                             Route::get('/absensikosong', AbsensiKosong::class);
                             Route::get('/dataresigned', DataResigned::class);
-                            Route::get('/addpresensi', AddPresensi::class);
                             Route::get('/usernotfound', UserNotFound::class);
                             Route::get('/movepresensidata', MovePresensiData::class);
                             Route::get('/moveback', Moveback::class);
