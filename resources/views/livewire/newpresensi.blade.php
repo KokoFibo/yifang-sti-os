@@ -91,7 +91,7 @@
                 <a href="/deleteduplicatepresensi">
                     <button class="btn btn-sm btn-success nightowl-daylight">{{ __('Cek Duplikat') }}</button></a>
             @endif
-            @if (auth()->user()->role >= 5)
+            @if (auth()->user()->role >= 6)
                 <a href="/yfdeletetanggalpresensiwr">
                     <button
                         class="btn btn-sm btn-warning nightowl-daylight">{{ __('Delete Tgl Presensi') }}</button></a>
