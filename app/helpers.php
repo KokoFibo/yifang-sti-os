@@ -207,6 +207,19 @@ function selisihHari($tgl, $tanggal_akhir)
 
 
 
+function tgl_bergabung($id)
+{
+    $karyawan = Karyawan::where('id_karyawan', $id)
+        ->select('tanggal_bergabung')
+        ->first();
+
+    if ($karyawan && !empty($karyawan->tanggal_bergabung)) {
+        return \Carbon\Carbon::parse($karyawan->tanggal_bergabung)
+            ->translatedFormat('d M Y');
+    }
+
+    return null;
+}
 function no_npwp($id)
 {
     // Fetch the Karyawan data by ID

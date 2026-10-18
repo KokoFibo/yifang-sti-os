@@ -118,7 +118,6 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
             $this->getPayrollQuery($statuses, $this->search, $this->selected_placement, $this->selected_company, $this->selected_departemen, $this->selected_placement2)
         )->orderBy($this->columnName, $this->direction)
             ->get();
-
         $nama_company = '';
         $nama_directorate = '';
         $nama_departement = '';
