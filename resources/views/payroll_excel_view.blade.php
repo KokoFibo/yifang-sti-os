@@ -102,6 +102,9 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
                 <th colspan="5" style="text-align: center; background-color: green; color:black">
                     <h4>Karyawan</h4>
                 </th>
@@ -110,7 +113,6 @@
                     <h4>Company</h4>
                 </th>
 
-                <th></th>
                 <th></th>
                 <th></th>
                 <th></th>
@@ -125,6 +127,7 @@
                 <th style="text-align: center;">No. Rekening</th>
                 <th style="text-align: center;">No NPWP</th>
                 <th style="text-align: center;">Jabatan</th>
+                <th style="text-align: center;">Tanggal Bergabung</th>
                 <th style="text-align: center;">Company</th>
                 <th style="text-align: center;">Directorate</th>
                 <th style="text-align: center;">Department</th>
@@ -271,6 +274,7 @@
                     <td style="text-align: center"> {{ strval($d->nomor_rekening) }}</td>
                     <td style="text-align: right"> {{ no_npwp($d->id_karyawan) }}</td>
                     <td style="text-align: center"> {{ nama_jabatan($d->jabatan_id) }}</td>
+                    <td style="text-align: center"> {{ tgl_bergabung($d->id_karyawan) }}</td>
                     <td style="text-align: center"> {{ nama_company($d->company_id) }}</td>
                     <td style="text-align: center"> {{ nama_placement($d->placement_id) }}</td>
                     <td style="text-align: center"> {{ nama_department($d->department_id) }}</td>
