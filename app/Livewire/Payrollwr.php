@@ -270,9 +270,9 @@ class Payrollwr extends Component
         // $this->placements = Placement::orderBy('p, lacement_name', 'ASC')->get();
 
 
-        // $this->placement2s = Placement2::orderBy('nama_placement', 'ASC')->get();
-        // $this->companies = Company::orderBy('company_name', 'ASC')->get();
-        // $this->departments = Department::orderBy('nama_department', 'ASC')->get();
+        $this->placement2s = Placement2::orderBy('nama_placement', 'ASC')->get();
+        $this->companies = Company::orderBy('company_name', 'ASC')->get();
+        $this->departments = Department::orderBy('nama_department', 'ASC')->get();
 
         // Panggil fungsi bulan untuk memperbarui daftar bulan
 
@@ -299,13 +299,7 @@ class Payrollwr extends Component
             $this->data_karyawan = Karyawan::where('id_karyawan', $data->id_karyawan)->first();
         }
 
-        $this->placements = Payroll::join('placements', 'placements.id', '=', 'payrolls.placement_id')
-            ->whereMonth('payrolls.date', $this->month)
-            ->whereYear('payrolls.date', $this->year)
-            ->select('placements.id', 'placements.placement_name')
-            ->distinct()
-            ->orderBy('placements.placement_name', 'ASC')
-            ->get();
+
 
 
         $this->placement2s = Payroll::join('placement2s', 'placement2s.id', '=', 'payrolls.placement2_id')
@@ -316,21 +310,7 @@ class Payrollwr extends Component
             ->orderBy('placement2s.nama_placement', 'ASC')
             ->get();
 
-        $this->companies = Payroll::join('companies', 'companies.id', '=', 'payrolls.company_id')
-            ->whereMonth('payrolls.date', $this->month)
-            ->whereYear('payrolls.date', $this->year)
-            ->select('companies.id', 'companies.company_name')
-            ->distinct()
-            ->orderBy('companies.company_name', 'ASC')
-            ->get();
 
-        $this->departments = Payroll::join('departments', 'departments.id', '=', 'payrolls.department_id')
-            ->whereMonth('payrolls.date', $this->month)
-            ->whereYear('payrolls.date', $this->year)
-            ->select('departments.id', 'departments.nama_department')
-            ->distinct()
-            ->orderBy('departments.nama_department', 'ASC')
-            ->get();
 
 
         $lock = Lock::find(1);
