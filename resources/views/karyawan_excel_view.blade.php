@@ -61,7 +61,7 @@
                         {{ $d->department?->nama_department ?? '-' }}
                     </td>
                     <td style="text-align: center">
-                        {{ $d->jabatan?->nama_jabatan ?? '-' }}
+                        {{ $d->placement2?->nama_placement ?? '-' }}
                     </td>
 
                     <td style="text-align: center">

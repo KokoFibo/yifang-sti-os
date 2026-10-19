@@ -299,13 +299,19 @@ class Payrollwr extends Component
             $this->data_karyawan = Karyawan::where('id_karyawan', $data->id_karyawan)->first();
         }
 
-        $this->placements = Payroll::join('placements', 'placements.id', '=', 'payrolls.placement_id')
+
+
+
+        $this->placement2s = Payroll::join('placement2s', 'placement2s.id', '=', 'payrolls.placement2_id')
             ->whereMonth('payrolls.date', $this->month)
             ->whereYear('payrolls.date', $this->year)
-            ->select('placements.id', 'placements.placement_name')
+            ->select('placement2s.id', 'placement2s.nama_placement')
             ->distinct()
-            ->orderBy('placements.placement_name', 'ASC')
+            ->orderBy('placement2s.nama_placement', 'ASC')
             ->get();
+
+
+
 
         $lock = Lock::find(1);
         $this->lock_presensi = $lock->presensi;
