@@ -24,6 +24,7 @@
                 <th style="text-align: center;">Company</th>
                 <th style="text-align: center;">Department</th>
                 <th style="text-align: center;">Jabatan</th>
+                <th style="text-align: center;">Placement</th>
                 <th style="text-align: center;">Level Jabatan</th>
                 <th style="text-align: center;">Agama</th>
                 <th style="text-align: center;">Etnis</th>
@@ -49,10 +50,23 @@
                 <tr>
                     <td style="text-align: center"> {{ $d->id_karyawan }}</td>
                     <td style="text-align: center"> {{ $d->nama }}</td>
-                    <td style="text-align: center"> {{ $d->placement->placement_name }}</td>
-                    <td style="text-align: center"> {{ $d->company->company_name }}</td>
-                    <td style="text-align: center"> {{ $d->department->nama_department }}</td>
-                    <td style="text-align: center"> {{ $d->jabatan->nama_jabatan }}</td>
+
+                    <td style="text-align: center">
+                        {{ $d->placement?->placement_name ?? '-' }}
+                    </td>
+                    <td style="text-align: center">
+                        {{ $d->company?->company_name ?? '-' }}
+                    </td>
+                    <td style="text-align: center">
+                        {{ $d->department?->nama_department ?? '-' }}
+                    </td>
+                    <td style="text-align: center">
+                        {{ $d->jabatan?->nama_jabatan ?? '-' }}
+                    </td>
+
+                    <td style="text-align: center">
+                        {{ $d->jabatan?->nama_jabatan ?? '-' }}
+                    </td>
                     <td style="text-align: center"> {{ getGrade($d->level_jabatan) }}</td>
                     <td style="text-align: center"> {{ $d->agama }}</td>
                     <td style="text-align: center"> {{ $d->etnis }}</td>
