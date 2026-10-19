@@ -270,7 +270,7 @@ class Payrollwr extends Component
         // $this->placements = Placement::orderBy('p, lacement_name', 'ASC')->get();
 
 
-        $this->placement2s = Placement2::orderBy('nama_placement', 'ASC')->get();
+        $this->placements = Placement::orderBy('placement_name', 'ASC')->get();
         $this->companies = Company::orderBy('company_name', 'ASC')->get();
         $this->departments = Department::orderBy('nama_department', 'ASC')->get();
 
