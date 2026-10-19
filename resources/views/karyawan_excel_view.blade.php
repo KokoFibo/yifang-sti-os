@@ -60,12 +60,13 @@
                     <td style="text-align: center">
                         {{ $d->department?->nama_department ?? '-' }}
                     </td>
-                    <td style="text-align: center">
-                        {{ $d->placement2?->nama_placement ?? '-' }}
-                    </td>
+
 
                     <td style="text-align: center">
                         {{ $d->jabatan?->nama_jabatan ?? '-' }}
+                    </td>
+                    <td style="text-align: center">
+                        {{ $d->placement2?->nama_placement ?? '-' }}
                     </td>
                     <td style="text-align: center"> {{ getGrade($d->level_jabatan) }}</td>
                     <td style="text-align: center"> {{ $d->agama }}</td>
