@@ -168,7 +168,8 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
 
 
         $header_text = 'Perincian Payroll ' . nama_bulan($this->month) . ' ' . $this->year;
-
+        $total_n_hari_kerja = getTotalWorkingDays($this->year, $this->month);
+        $jumlah_libur_nasional = jumlah_libur_nasional($this->month, $this->year);
         return view('payroll_excel_view', [
             // 'data' => $data,
             'data' => $payroll,
@@ -177,7 +178,9 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
             'nama_directorate' => nama_placement($this->selected_placement),
             'nama_placement2' => nama_placement2($this->selected_placement2),
             'nama_company' => nama_company($this->selected_company),
-            'nama_departement' => nama_department($this->selected_departemen)
+            'nama_departement' => nama_department($this->selected_departemen),
+            'total_n_hari_kerja' => $total_n_hari_kerja,
+            'jumlah_libur_nasional' => $jumlah_libur_nasional
         ]);
     }
 
@@ -224,7 +227,9 @@ class PayrollExportFLexible implements FromView,  ShouldAutoSize, WithColumnForm
             'AT' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
             'AU' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
             'AV' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
-            'AW' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED
+            'AW' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
+            'AX' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED,
+            'AY' => NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED
 
         ];
     }
