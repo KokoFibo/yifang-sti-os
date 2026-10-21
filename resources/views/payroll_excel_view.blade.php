@@ -105,6 +105,8 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
+                <th></th>
                 <th colspan="5" style="text-align: center; background-color: green; color:black">
                     <h4>Karyawan</h4>
                 </th>
@@ -141,6 +143,8 @@
                 <th style="text-align: center;">Jumlah Jam Terlambat</th>
                 <th style="text-align: center;">Tambahan Shift Malam</th>
                 <th style="text-align: center;">Gaji Pokok</th>
+                <th style="text-align: center;">Gaji Per Hari/Jam</th>
+                <th style="text-align: center;">Gaji Bulan Ini</th>
                 <th style="text-align: center;">Gaji Lembur</th>
                 <th style="text-align: center;">Gaji Libur</th>
                 <th style="text-align: center;">Bonus/U.Makan</th>
@@ -288,6 +292,13 @@
                     <td> {{ $d->jumlah_jam_terlambat }}</td>
                     <td style="text-align: right"> {{ $d->tambahan_shift_malam }}</td>
                     <td style="text-align: right"> {{ $d->gaji_pokok }}</td>
+                    @if ($d->metode_penggajian == 'Perjam')
+                        <td style="text-align: right"> {{ $d->gaji_pokok / 198 }}</td>
+                    @else
+                        <td style="text-align: right"> {{ $d->gaji_pokok / $total_n_hari_kerja }}</td>
+                    @endif
+                    {{-- <td style="text-align: right"> {{ $gaji_bulan_ini }}</td> --}}
+                    <td style="text-align: right"> {{ $d->gaji_bulan_ini }}</td>
                     <td style="text-align: right"> {{ $d->gaji_lembur }}</td>
                     <td style="text-align: right"> {{ $d->gaji_libur }}</td>
                     <td style="text-align: right"> {{ $d->bonus1x }}</td>
