@@ -107,6 +107,8 @@
                 <th></th>
                 <th></th>
                 <th></th>
+                <th></th>
+                <th></th>
                 <th colspan="5" style="text-align: center; background-color: green; color:black">
                     <h4>Karyawan</h4>
                 </th>
@@ -146,6 +148,8 @@
                 <th style="text-align: center;">Gaji Per Hari/Jam</th>
                 <th style="text-align: center;">Gaji Bulan Ini</th>
                 <th style="text-align: center;">Gaji Lembur</th>
+                <th style="text-align: center;">Total Gaji Lembur</th>
+                <th style="text-align: center;">Total Gaji Lembur Libur</th>
                 <th style="text-align: center;">Gaji Libur</th>
                 <th style="text-align: center;">Bonus/U.Makan</th>
                 <th style="text-align: center;">THR</th>
@@ -300,6 +304,8 @@
                     {{-- <td style="text-align: right"> {{ $gaji_bulan_ini }}</td> --}}
                     <td style="text-align: right"> {{ $d->gaji_bulan_ini }}</td>
                     <td style="text-align: right"> {{ $d->gaji_lembur }}</td>
+                    <td style="text-align: right"> {{ $d->gaji_lembur * $d->jam_lembur }}</td>
+                    <td style="text-align: right"> {{ $d->gaji_lembur * $d->jam_lembur_libur }}</td>
                     <td style="text-align: right"> {{ $d->gaji_libur }}</td>
                     <td style="text-align: right"> {{ $d->bonus1x }}</td>
                     <td style="text-align: right"> {{ $d->thr }}</td>
