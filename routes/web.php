@@ -257,6 +257,8 @@ Route::middleware(['auth'])->group(function () {
                     ]);
                 });
                 Route::get('/ai-query/export', AiQueryExportController::class)->name('ai-query.export');
+                Route::get('/excelkhusus', ExcelKhusus::class);
+
 
 
                 //Khusus Senior Admin
@@ -281,7 +283,6 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/template-gaji-form', [ExcelController::class, 'template_gaji']);
                     Route::get('/template-gaji-form-placement', [ExcelController::class, 'template_gaji_placement']);
                     Route::get('/cek-kenaikan-gaji', Cekkenaikangaji::class);
-                    Route::get('/excelkhusus', ExcelKhusus::class);
 
 
 
