@@ -242,12 +242,6 @@
                                     </th>
                                     @if (auth()->user()->role >= 6)
                                         <th style="width: 150px; border-style: none;">
-                                            <a href="/excelkhusus">
-                                                <button wire:loading.remove wire:click="Excel Khusus"
-                                                    class="btn btn-success col-12">Excel Khusus</button>
-                                            </a>
-                                        </th>
-                                        <th style="width: 150px; border-style: none;">
                                             <a href="/cek-kenaikan-gaji"><button class="btn btn-primary col-12">Cek
                                                     Perkembangan Gaji</button></a>
                                         </th>
@@ -273,6 +267,15 @@
                                         <a href="/iuranlocker"><button
                                                 class="btn btn-primary {{ is_data_locked() ? 'd-none' : '' }}">Hapus
                                                 Iuran Locker</button></a>
+                                    </th>
+                                @endif
+                                @if (auth()->user()->role >= 5)
+                                    <th style="width: 150px; border-style: none;">
+                                        <a href="/excelkhusus">
+                                            <button type="button" class="btn btn-success col-12">
+                                                Excel Khusus
+                                            </button>
+                                        </a>
                                     </th>
                                 @endif
                                 {{-- <th style="width: 150px; border-style: none;">
