@@ -235,11 +235,18 @@
                                                     Data From Other Database</button></a>
                                         </th>
                                     @endif
+
                                     <th style="width: 150px; border-style: none;">
                                         <a href="/infokaryawan">
                                             <button class="btn btn-info">Informasi</button> </a>
                                     </th>
                                     @if (auth()->user()->role >= 6)
+                                        <th style="width: 150px; border-style: none;">
+                                            <a href="/excelkhusus">
+                                                <button wire:loading.remove wire:click="Excel Khusus"
+                                                    class="btn btn-success col-12">Excel Khusus</button>
+                                            </a>
+                                        </th>
                                         <th style="width: 150px; border-style: none;">
                                             <a href="/cek-kenaikan-gaji"><button class="btn btn-primary col-12">Cek
                                                     Perkembangan Gaji</button></a>

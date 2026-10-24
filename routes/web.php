@@ -49,6 +49,7 @@ use App\Livewire\Developer;
 use App\Livewire\DeveloperDashboard;
 use App\Livewire\Directinject;
 use App\Livewire\Editpresensiwr;
+use App\Livewire\ExcelKhusus;
 use App\Livewire\Excelpresensi;
 use App\Livewire\Gajibpjs;
 use App\Livewire\Gantipassworddeveloper;
@@ -280,6 +281,8 @@ Route::middleware(['auth'])->group(function () {
                     Route::get('/template-gaji-form', [ExcelController::class, 'template_gaji']);
                     Route::get('/template-gaji-form-placement', [ExcelController::class, 'template_gaji_placement']);
                     Route::get('/cek-kenaikan-gaji', Cekkenaikangaji::class);
+                    Route::get('/excelkhusus', ExcelKhusus::class);
+
 
 
 
