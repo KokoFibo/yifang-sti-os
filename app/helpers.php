@@ -28,6 +28,17 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+function nik($id)
+{
+    // Fetch the Karyawan data by ID
+    $karyawan = Karyawan::where('id_karyawan', $id)->select('no_identitas')->first();
+
+    if ($karyawan) {
+        return (string) $karyawan->no_identitas;
+    }
+    return null;
+}
+
 
 
 function resetPasswordApi($email, $tanggalLahir)
